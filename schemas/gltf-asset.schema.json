@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gltf-asset.schema.json",
+  "title": "Ready Player Me GLTF Asset Validation",
+  "description": "A Ready Player Me glTF binary asset validation schema. Validates augmented output of @gltf-transform/functions::inspect().",
+  "type": "object",
+  "properties": {
+    "assetType": {
+      "description": "The type of asset.",
+      "type": "string",
+      "default": "outfit",
+      "enum": [
+        "beard",
+        "facewear",
+        "glasses",
+        "hair",
+        "headwear",
+        "nonCustomizableAvatar",
+        "shirt",
+        "outfit"
+      ],
+      "errorMessage": {
+        "type": "Asset type should be a string.",
+        "enum": "Asset type should be one of the following: beard, facewear, glasses, hair, headwear, nonCustomizableAvatar, shirt, outfit. Found ${0}."
+      }
+    },
+    "transforms": {
+      "description": "The transforms of the objects (meshes & skeleton root).",
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 16,
+        "maxItems": 16,
+        "items": {
+          "type": "number"
+        },
+        "const": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+        "errorMessage": {
+          "const": "Transforms for ${0#} must be neutral (identity matrix: zero translation or rotation, scale of 1). Found ${0}.",
+          "_": "Transforms for ${0#} must be an array of 16 numbers (flattened 4x4 identity matrix). Found ${0/length} numbers."
+        }
+      }
+    },
+    "gltfErrors": {
+      "description": "The errors encountered during glTF validation.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 0,
+      "errorMessage": {
+        "maxItems": "Encountered errors codes from gltf-validator: ${0}."
+      }
+    }
+  },
+  "required": ["transforms", "gltfErrors"],
+  "$comment": "Below are the asset type specific schemas defined. Some asset share a material definition, but differ in the number of supported textures.",
+  "allOf": [
+    {
+      "if": {
+        "properties": { "assetType": { "const": "outfit" } }
+      },
+      "then": {
+        "allOf": [
+          { "$ref": "assetOutfit.schema.json" },
+          { "$ref": "assetOutfit.schema.json#/$defs/outfitTextureCount" }
+        ]
+      },
+      "$comment": "Outfit is the default asset type if no assetType is set in the data."
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "beard" } },
+        "required": ["assetType"]
+      },
+      "then": { "$ref": "assetBeard.schema.json" }
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "facewear" } },
+        "required": ["assetType"]
+      },
+      "then": {
+        "allOf": [
+          { "$ref": "assetFacewear.schema.json" },
+          {
+            "$ref": "commonTexture.schema.json#/$defs/dualMaterialTextureCount"
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "glasses" } },
+        "required": ["assetType"]
+      },
+      "then": {
+        "allOf": [
+          { "$ref": "assetGlasses.schema.json" },
+          {
+            "$ref": "commonTexture.schema.json#/$defs/dualMaterialTextureCount"
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "hair" } },
+        "required": ["assetType"]
+      },
+      "then": { "$ref": "assetHair.schema.json" }
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "headwear" } },
+        "required": ["assetType"]
+      },
+      "then": {
+        "allOf": [
+          { "$ref": "assetHeadwear.schema.json" },
+          {
+            "$ref": "commonTexture.schema.json#/$defs/dualMaterialTextureCount"
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "nonCustomizableAvatar" } },
+        "required": ["assetType"]
+      },
+      "then": {
+        "allOf": [
+          { "$ref": "assetNonCustomizableAvatar.schema.json" },
+          {
+            "$ref": "assetNonCustomizableAvatar.schema.json#/$defs/nonCustomizableAvatarTextureCount"
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "shirt" } },
+        "required": ["assetType"]
+      },
+      "then": {
+        "allOf": [
+          { "$ref": "assetShirt.schema.json" },
+          {
+            "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+          }
+        ]
+      }
+    }
+  ],
+  "errorMessage": {
+    "type": "Validation data should be a JSON object.",
+    "required": {
+      "transforms": "Validation data should have a 'transforms' property."
+    },
+    "_": "Asset failed validation against its asset type ${0/assetType}."
+  }
+}

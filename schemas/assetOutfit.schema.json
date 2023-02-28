@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "assetOutfit.schema.json",
+  "title": "Fullbody Outfit Asset",
+  "description": "A Ready Player Me glTF binary validation schema for a fullbody outfit.",
+  "type": "object",
+  "properties": {
+    "scenes": { "$ref": "scene.schema.json#/$defs/fullbodyOutfitScene" },
+    "meshes": {
+      "type": "object",
+      "properties": {
+        "totalTriangleCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20000,
+          "errorMessage": {
+            "minimum": "Too few triangles! Full-body outfit assets must have at least 1 triangle.",
+            "maximum": "Too many triangles (${0})! Full-body outfit assets must have no more than a total of 20,000 triangles."
+          }
+        },
+        "properties": {
+          "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Name of the mesh.",
+                "$ref": "meshNames.schema.json#/properties/outfit"
+              },
+              "attributes": {
+                "$ref": "meshAttributes.schema.json#/properties/skinned"
+              },
+              "glPrimitives": { "type": "integer" }
+            },
+            "allOf": [
+              { "$ref": "commonMesh.schema.json" },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "const": "Wolf3D_Body" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/body"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "const": "Wolf3D_Outfit_Bottom" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/outfitBottom"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "const": "Wolf3D_Outfit_Footwear" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/outfitFootwear"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "const": "Wolf3D_Outfit_Top" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/outfitTop"
+                    }
+                  }
+                }
+              }
+            ],
+            "required": [
+              "name",
+              "mode",
+              "primitives",
+              "glPrimitives",
+              "vertices",
+              "indices",
+              "attributes",
+              "instances",
+              "size"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 4,
+          "errorMessage": {
+            "minItems": "Missing mesh! Full-body outfit asset must have at least 1 mesh.",
+            "maxItems": "Too many meshes! Full-body outfit asset must have no more than 4 meshes."
+          }
+        }
+      }
+    },
+    "materials": {
+      "type": "object",
+      "properties": {
+        "properties": {
+          "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Name of the material.",
+                "$ref": "materialNames.schema.json#/properties/outfit"
+              },
+              "textures": {
+                "description": "Textures used by the outfit materials. The 'Wolf3D_Body' material uses only the 'normalTexture'. All other materials can use all channels."
+              },
+              "doubleSided": {
+                "$ref": "commonMaterial.schema.json#/$defs/singleSided"
+              },
+              "alphaMode": {
+                "$ref": "commonMaterial.schema.json#/$defs/opaqueAlphaMode"
+              }
+            },
+            "allOf": [
+              { "$ref": "commonMaterial.schema.json" },
+              {
+                "if": {
+                  "properties": {
+                    "name": {
+                      "const": "Wolf3D_Body"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "textures": {
+                      "$ref": "commonMaterial.schema.json#/$defs/normalOnlyTextureChannels"
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "textures": {
+                      "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
+                    }
+                  }
+                }
+              }
+            ],
+            "required": [
+              "name",
+              "instances",
+              "textures",
+              "alphaMode",
+              "doubleSided"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": { "$data": "/meshes/properties/length" },
+          "maxItems": { "$data": "/meshes/properties/length" },
+          "errorMessage": {
+            "minItems": "Missing material! This outfit asset must have ${/meshes/properties/length} materials, one for each mesh. Found ${/materials/properties/length}.",
+            "maxItems": "Too many materials! This outfit asset must have ${/meshes/properties/length} materials, one for each mesh. Found ${/materials/properties/length}."
+          }
+        }
+      }
+    },
+    "textures": { "$ref": "commonTexture.schema.json#/$defs/fullPBR" },
+    "animations": { "$ref": "animation.schema.json#/properties/noAnimation" },
+    "joints" : {"allOf": [{ "$ref": "joints.schema.json#/$defs/skeletonV2" }, { "$ref": "joints.schema.json#/$defs/skeletonV2/$defs/maxJoints" }]}
+  },
+  "required": ["scenes", "meshes", "materials", "joints"],
+  "$defs": {
+    "outfitTextureCount": {
+      "type": "object",
+      "properties": {
+        "textures": {
+          "type": "object",
+          "properties": {
+            "properties": {
+              "type": "array",
+              "maxItems": 16,
+              "$comment": "A full-body outfit asset supports up to 3 materials with up to 5 maps each and 1 body normal map, totalling 16 maps.",
+              "errorMessage": {
+                "maxItems": "Too many texture maps (${0/length})! This Asset type ${/assetType} must have 16 maps at most."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
