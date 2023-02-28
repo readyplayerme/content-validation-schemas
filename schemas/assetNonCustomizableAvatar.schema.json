@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "assetNonCustomizableAvatar.schema.json",
+  "title": "Non-Customizable Avatar Asset",
+  "description": "A Ready Player Me glTF binary validation schema for a non-Customizable avatar.",
+  "type": "object",
+  "properties": {
+    "scenes": { "$ref": "scene.schema.json#/$defs/fullbodyOutfitScene" },
+    "meshes": {
+      "type": "object",
+      "properties": {
+        "totalTriangleCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30000,
+          "errorMessage": {
+            "minimum": "Too few triangles! Non-customizable avatars must have at least 1 triangle.",
+            "maximum": "Too many triangles (${0})! Non-customizable avatars must have no more than a total of 30,000 triangles."
+          }
+        },
+        "properties": {
+          "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Name of the mesh.",
+                "$ref": "meshNames.schema.json#/properties/nonCustomizableAvatar"
+              },
+              "attributes": {
+                "$ref": "meshAttributes.schema.json#/properties/skinned"
+              },
+              "glPrimitives": { "type": "integer" }
+            },
+            "allOf": [
+              { "$ref": "commonMesh.schema.json" },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "const": "Wolf3D_Body_Custom" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/bodyCustom"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "type": "string", "enum": ["EyeLeft", "EyeRight"] }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/eye"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "const": "Wolf3D_Head_Custom" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/headCustom"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "const": "Wolf3D_Outfit_Bottom" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/outfitBottom"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "const": "Wolf3D_Outfit_Footwear" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/outfitFootwear"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "const": "Wolf3D_Outfit_Top" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/outfitTop"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "name": { "const": "Wolf3D_Teeth" }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "glPrimitives": {
+                      "$ref": "meshTriangleCount.schema.json#/properties/teeth"
+                    }
+                  }
+                }
+              }
+            ],
+            "required": [
+              "name",
+              "mode",
+              "primitives",
+              "glPrimitives",
+              "vertices",
+              "indices",
+              "attributes",
+              "instances",
+              "size"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 8,
+          "errorMessage": {
+            "minItems": "Missing mesh! Non-customizable avatars must have at least 1 mesh.",
+            "maxItems": "Too many meshes! Non-customizable avatars must have no more than 8 meshes."
+          }
+        }
+      }
+    },
+    "materials": {
+      "type": "object",
+      "properties": {
+        "properties": {
+          "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Name of the material.",
+                "$ref": "materialNames.schema.json#/properties/nonCustomizableAvatar"
+              },
+              "textures": {
+                "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
+              },
+              "doubleSided": {
+                "$ref": "commonMaterial.schema.json#/$defs/singleSided"
+              },
+              "alphaMode": {
+                "$ref": "commonMaterial.schema.json#/$defs/opaqueAlphaMode"
+              }
+            },
+            "allOf": [
+              { "$ref": "commonMaterial.schema.json" }
+            ],
+            "required": [
+              "name",
+              "instances",
+              "textures",
+              "alphaMode",
+              "doubleSided"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 7,
+          "errorMessage": {
+            "minItems": "Missing material! This avatar must have at least 1 material. Found ${/materials/properties/length}.",
+            "maxItems": "Too many materials! This avatar only supports up to 7 materials (eyes share a material). Found ${/materials/properties/length}."
+          }
+        }
+      }
+    },
+    "textures": { "$ref": "commonTexture.schema.json#/$defs/fullPBR" },
+    "animations": { "$ref": "animation.schema.json#/properties/noAnimation" },
+    "joints" : { "$ref": "joints.schema.json#/$defs/skeletonV2WithEyes" }
+  },
+  "required": ["scenes", "meshes", "materials", "joints"],
+  "$defs":{
+    "nonCustomizableAvatarTextureCount": {
+      "type": "object",
+      "description": "A non-customizable avatar supports up to 7 materials with 5 maps each, totalling 35 maps.",
+      "properties": {
+        "textures": {
+          "type": "object",
+          "properties": {
+            "properties": {
+              "type": "array",
+              "maxItems": 35,
+              "errorMessage": {
+                "maxItems": "Too many texture maps (${0/length})! This Asset type ${/assetType} must have 35 maps at most."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
