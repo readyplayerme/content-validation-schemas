@@ -1,0 +1,23 @@
+---
+name: Lint JSON Schemas
+
+########################
+# Start the job on PRs #
+########################
+on:
+  pull_request:
+    branches: [main]
+    types: [ready_for_review, reopened]
+
+###############
+# Set the Job #
+###############
+jobs:
+  validate:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Validate JSON Schemas
+          uses: walbo/validate-json@v1.1.0
+          with:
+            files: schemas/**/*.schema.json
