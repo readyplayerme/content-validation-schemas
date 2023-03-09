@@ -5,42 +5,7 @@
   "description": "A Ready Player Me glTF binary validation schema for headwear.",
   "type": "object",
   "properties": {
-    "scenes": {
-      "type": "object",
-      "properties": {
-        "properties": {
-          "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": { "description": "Name of the scene.", "type": "string" },
-              "rootName": {
-                "description": "Name of the root node in the scene.",
-                "oneOf": [
-                  { "$ref": "meshNames.schema.json#/properties/headwear" },
-                  { "type": "string", "const": "Headwear_Rig" }
-                ],
-                "errorMessage": "The root node should either be an unskinned mesh, or a skeleton named 'Headwear_Rig'. Mesh name is ${/meshes/properties/0/name}. Found root ${0} instead."
-              }
-            },
-            "allOf": [{ "$ref": "scene.schema.json#/$defs/headBbox" }],
-            "required": ["rootName"],
-            "errorMessage": {
-              "required": {
-                "rootName": "Missing root node property in the scene ${0/name}."
-              }
-            }
-          },
-          "minItems": 1,
-          "maxItems": 1,
-          "errorMessage": {
-            "minItems": "There must be exactly one scene.",
-            "maxItems": "There must be only one scene."
-          }
-        }
-      }
-    },
+    "scenes": { "$ref": "scene.schema.json#/$defs/singleMeshScene" },
     "meshes": {
       "type": "object",
       "properties": {

@@ -25,8 +25,16 @@
               "rootName": {
                 "description": "Name of the root node in the scene.",
                 "type": "string",
-                "const": { "$data": "/meshes/properties/0/name" },
-                "errorMessage": "The mesh should be the root node. Mesh name is ${/meshes/properties/0/name}. Found root ${0} instead."
+                "if": {
+                  "const": { "$data": "/meshes/properties/0/name" }
+                },
+                "then": {
+                  "const": { "$data": "/meshes/properties/0/name" }
+                },
+                "else": {
+                  "const": "Armature"
+                },
+                "errorMessage": "The root node should either be the mesh, or a skeleton named 'Armature' if the mesh is skinned. Mesh name is ${/meshes/properties/0/name}. Found root ${0} instead."
               }
             },
             "allOf": [{ "$ref": "#/$defs/headBbox" }],
