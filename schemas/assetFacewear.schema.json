@@ -20,7 +20,14 @@
                 "$ref": "meshNames.schema.json#/properties/facewear"
               },
               "attributes": {
-                "$ref": "meshAttributes.schema.json#/properties/unskinned"
+                "oneOf": [
+                  {
+                    "$ref": "meshAttributes.schema.json#/properties/skinned"
+                  },
+                  {
+                    "$ref": "meshAttributes.schema.json#/properties/unskinned"
+                  }
+                ]
               },
               "glPrimitives": {
                 "$ref": "meshTriangleCount.schema.json#/properties/facewear"
