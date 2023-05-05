@@ -11,17 +11,27 @@
       "default": "outfit",
       "enum": [
         "beard",
+        "bottom",
+        "eye",
+        "eyebrows",
+        "eyeshape",
+        "facemask",
+        "faceshape",
         "facewear",
+        "footwear",
         "glasses",
         "hair",
         "headwear",
+        "lipshape",
         "nonCustomizableAvatar",
+        "noseshape",
+        "outfit",
         "shirt",
-        "outfit"
+        "top"
       ],
       "errorMessage": {
         "type": "Asset type should be a string.",
-        "enum": "Asset type should be one of the following: beard, facewear, glasses, hair, headwear, nonCustomizableAvatar, shirt, outfit. Found ${0}."
+        "enum": "Asset type should be one of the following: beard, bottom, eye, eyebrows, eyeshape, facemask, faceshape, facewear, footwear, glasses, hair, headwear, lipshape, nonCustomizableAvatar, noseshape, outfit, shirt, top. Found ${0}."
       }
     },
     "transforms": {
