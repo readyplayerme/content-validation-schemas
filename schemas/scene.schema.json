@@ -127,7 +127,7 @@
             {
               "type": "number",
               "minimum": -0.1,
-              "maximum": 0.5,
+              "maximum": 1.5,
               "errorMessage": "Bounding Box Y minimum for body area must be between -0.1 and 0.5. Found ${0} and index ${0#}"
             },
             {

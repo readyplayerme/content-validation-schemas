@@ -87,6 +87,17 @@
     },
     {
       "if": {
+        "properties": { "assetType": { "const": "bottom" } }
+      },
+      "then": {
+        "allOf": [
+          { "$ref": "assetBottom.schema.json" },
+          { "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount" }
+        ]
+      }
+    },
+    {
+      "if": {
         "properties": { "assetType": { "const": "facewear" } },
         "required": ["assetType"]
       },
@@ -96,6 +107,17 @@
           {
             "$ref": "commonTexture.schema.json#/$defs/dualMaterialTextureCount"
           }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "footwear" } }
+      },
+      "then": {
+        "allOf": [
+          { "$ref": "assetFootwear.schema.json" },
+          { "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount" }
         ]
       }
     },
@@ -159,6 +181,17 @@
           {
             "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
           }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "top" } }
+      },
+      "then": {
+        "allOf": [
+          { "$ref": "assetTop.schema.json" },
+          { "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount" }
         ]
       }
     }
