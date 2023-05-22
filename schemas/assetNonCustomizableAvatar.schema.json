@@ -172,7 +172,7 @@
                 "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
               },
               "doubleSided": {
-                "$ref": "commonMaterial.schema.json#/$defs/singleSided"
+                "$ref": "commonMaterial.schema.json#/$defs/anySided"
               },
               "alphaMode": {
                 "$ref": "commonMaterial.schema.json#/$defs/opaqueAlphaMode"
