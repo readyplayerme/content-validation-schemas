@@ -84,9 +84,9 @@
     },
     "outfitBottom": {
       "type": "integer",
-      "maximum": 5000,
+      "maximum": 6000,
       "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 5000. Found: ${0}."
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 6000. Found: ${0}."
       }
     },
     "outfitTop": {
