@@ -24,7 +24,7 @@ limits = {
     "head": 4574,
     "headCustom": 6000,
     "headwear": 2500,
-    "outfitBottom": 5000,
+    "outfitBottom": 6000,
     "outfitTop": 6000,
     "outfitFootwear": 2000,
     "halfbodyShirt": 1000,
@@ -42,6 +42,7 @@ class TriCountConfig(SchemaConfig):
 
     title = "Triangle Count"
     error_msg_templates: ClassVar[dict[str, str]] = {
+        # Prepend the error code to the messages.
         e: f"{ERROR_CODE} " + msg
         for e, msg in {
             "value_error.number.not_gt": "Mesh must have at least 1 triangle.",
@@ -77,6 +78,6 @@ if __name__ == "__main__":
     # Example of validation in Python.
     try:
         # Multiple checks at once. Test non-existent field as well.
-        MeshTriangleCountModel(outfitBottom=6000, outfitTop=0, outfitFootwear=1000, foo=10)
+        MeshTriangleCountModel(outfitBottom=6000, outfitTop=0, outfitFootwear=3000, foo=10)
     except ValidationError as error:
         print("\nValidation Errors:\n", error)
