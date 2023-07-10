@@ -18,9 +18,10 @@ class SchemaConfig(BaseConfig):
             # Get the "outer" class name with a lower case first letter.
             "$id": f"{(name := model.__name__)[0].lower() + name[1:]}.schema.json",
         }
-        # Remove "title" from properties.
+        # Remove "title" & "default" from properties.
         for prop in schema.get("properties", {}).values():
             prop.pop("title", None)
+            prop.pop("default", None)
 
 
 class BaseModel(PydanticBaseModel):
