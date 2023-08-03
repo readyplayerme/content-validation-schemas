@@ -11,6 +11,7 @@ Here are some resources to help you get started with open source contributions:
 - [Collaborating with pull requests](https://docs.github.com/en/github/collaborating-with-pull-requests)
 - Learn about [pre-commit hooks](https://pre-commit.com/)
 - We use [black](https://black.readthedocs.io/en/stable/) formatting, but with a line-length of 120 characters.
+- If you haven't yet setup an IDE, we recommend [Visual Studio Code](https://code.visualstudio.com/). See [Python in Visual Studio Code](https://code.visualstudio.com/docs/languages/python).
 
 ## Getting started
 
@@ -36,36 +37,85 @@ The [`good first issue` label](https://github.com/wolfprint3d/content-validation
 
 ## Contribute
 
-### Make changes locally
+### Get the Code
 
 1. If you are a contributor from outside the Ready Player Me team, [fork the repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo).
 
 2. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the (forked) repository to your local machine.
 
-3. It's best to use a separate Python _environment_ for development to avoid conflicts with other Python projects and keep your system Python clean.
-    We encourage using an environment manager such as [conda](https://docs.conda.io/en/latest/), [micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html), or [poetry](https://python-poetry.org/).  
+### Setting up Development Environment
+
+It's best to use a separate Python _environment_ for development to avoid conflicts with other Python projects and keep your system Python clean. In this section we'll provide instructions on how to set up such an environment.
+
+We use [hatch](https://hatch.pypa.io/) as the Python package build backend and Python project manager.
+We recommend to install it as it will provide you with a project-specific development environment. However, using hatch is not a necessity, but more of a convenience.  
+Unfortunately, there are no pre-built binaries for hatch, and hatch on its own can only create environments with Python versions that are already installed on your system. So you'll need to first create a Python environment to install hatch into, in order to then spawn another environment for the project by using hatch. It's a bit like the chicken & egg problem paired with the movie Inception.😵‍💫 We'll walk you through it.
+
+1. We encourage using an environment manager such as [conda](https://docs.conda.io/en/latest/), [mamba/micromamba](https://mamba.readthedocs.io/en/latest/index.html), or [poetry](https://python-poetry.org/).  
     You'll need a minimum Python version 3.10.
+    Here's an example on Windows:
 
-4. We use [hatch](https://hatch.pypa.io/) as the Python package build backend and Python project manager.
-    We recommend to install it as well as it will provide you with additional development environments.
-    Why do I need et another environment manager, you might ask?
-    Because hatch on its own can only create environments with Python versions that are already installed on your system. 😔
-    However, using hatch is not a necessity, but more of a convenience.
-    See [hatch's installation instructions](https://hatch.pypa.io/latest/install/) for more information on how to install it into your Python environment.
+    ```powershell
+    # Get mamba using winget.
+    winget install -e --id CondaForge.Mambaforge
 
-    Once you setup hatch, navigate to the cloned repository, and execute `hatch env create`.
-    This will create yet a new environment and install the development dependencies into it.
-    You can get the new environment path and add it to your IDE as a Python interpreter for this repository, `hatch run python -c "import sys;print(sys.executable)"`.
+    # Make mamba available in your shell. mamba may be either installed in %ProgramData% or %LocalAppData%.
+    %ProgramData%\mambaforge\.condabin\mamba init
+    # OR, if your mamba installation is in %LocalAppData% instead:
+    %LocalAppData%\mambaforge\.condabin\mamba init
+    # You may need to restart your terminal now.
+
+    # Test that mamba is available.
+    mamba --version  # This should print something like "mamba 1.4.1".
+    ```
+
+2. You can read [hatch's installation instructions](https://hatch.pypa.io/latest/install/) for information on how to install it into your Python environment, or follow the instructions below.
+
+    If you use conda/mamba, you can create a Python environment to which hatch gets installed with:
+
+    ```powershell
+    mamba create -n hatch python=3.10 hatch
+    ```
+
+    In the command above, the `-n hatch` option just gives the environment the name _hatch_, but it can be anything.
+    The name _hatch_ for the environment was incidentally chosen here to match the 1 package we want to utilize in this environment. The `python=3.10 hatch` part of the command defines what we want to install into the environment. See [mamba's documentation](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html#quickstart) for more details.
+
+3. Activate the hatch environment.
+
+    ```mamba activate hatch```
+
+    OR if you're using Powershell (see [issue](https://github.com/mamba-org/mamba/issues/1717)):
+
+    ```conda activate hatch```
+
+4. Prepare the environment for development.
+    Once you setup hatch, navigate to the cloned repository, and execute:
+
+    ```powershell
+    hatch env create
+    ```
+
+    This will create yet a new environment within a `.venv` folder of the project and install the development dependencies into it.
+    An IDE like [Visual Studio Code](https://code.visualstudio.com/) will automatically detect this environment and suggest to you to use it as the Python interpreter for this repository.
+    It also installs [pre-commit](https://pre-commit.com/) hooks into the repository, which will run linting and formatting checks before you commit your changes.
+
+    Alternatively, you can get the new environment path and add it to your IDE as a Python interpreter for this repository with:
+
+    ```hatch run python -c "import sys;print(sys.executable)"```
 
     If you decided against using hatch, we still recommend installing the pre-commit hooks.
 
-5. Create a working branch and prefix its name with _fix/_ if it's a bug fix, or _feature/_ if it's a new feature.
+    ```pre-commit install```
+
+### Branch Off & Make Your Changes
+
+1. Create a working branch and prefix its name with _fix/_ if it's a bug fix, or _feature/_ if it's a new feature.
     Start with your changes!  
     Have a look at the README for more information on how to use the package.
 
-6. Write or update tests for your changes. <!-- TODO Explain how we do tests -->
+2. Write or update tests for your changes. <!-- TODO Explain how we do tests -->
 
-7. Run tests with `hatch run test` and code linting & formatting with `hatch run lint:all` locally.
+3. Run tests with `hatch run test` and or run linting & formatting and tests with `hatch run all` locally.
 
 ### Commit your update
 
