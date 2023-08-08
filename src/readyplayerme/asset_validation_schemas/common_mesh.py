@@ -1,9 +1,16 @@
 """Validation model for common properties of meshes."""
 from enum import Enum
-from typing import Literal
+from typing import Any, Literal
 
-from pydantic import Field, ValidationError
+from pydantic import (
+    Field,
+    FieldValidationInfo,
+    ValidationError,
+    ValidatorFunctionWrapHandler,
+    field_validator,
+)
 from pydantic.dataclasses import dataclass
+from pydantic_core import ErrorDetails, PydanticCustomError
 
 from readyplayerme.asset_validation_schemas.basemodel import get_model_config
 
@@ -23,45 +30,96 @@ class RenderingMode(str, Enum):
     POINTS = "POINTS"
 
 
+MAXIMUM_MESH_SIZE = 512  # Kb
+
+render_mode_error = f"Rendering mode must be {RenderingMode.TRIANGLES.value}."
+primitives_error = "Number of primitives in the mesh must be 1, or 2 when an additional transparent material is used."
+indices_error = f"Indices must be '{IntegerType.u16.value}' single-item array."
+instances_error = "Only 1 instance per mesh is supported."
+mesh_size_errors = {
+    "greater_than": f"Maximum allowed mesh size is {MAXIMUM_MESH_SIZE} kB.",
+    "less_than_equal": "Mesh has 0 bytes, seems to be empty!",
+}
+
+
+def get_error_type_msg(field_name: str, error: ErrorDetails) -> tuple[str, str] | tuple[None, None]:
+    """Convert the error to a custom error type and message.
+
+    If the error type is not covered, return a None-tuple.
+    """
+    match field_name, error["ctx"]:
+        case "mode", _:
+            return "RENDER_MODE", render_mode_error
+        case "primitives", _:
+            return "PRIMITIVES", primitives_error
+        case "indices", _:
+            return "INDICES", indices_error
+        case "instances", _:
+            return "INSTANCES", instances_error
+        case "size", {"le": _}:
+            return "MESH_SIZE", mesh_size_errors["greater_than"]
+        case "size", {"gt": _}:
+            return "MESH_SIZE", mesh_size_errors["less_than_equal"]
+        case _:
+            return None, None
+
+
+def custom_error_validator(value: Any, handler: ValidatorFunctionWrapHandler, info: FieldValidationInfo) -> Any:
+    """Simplify the error message to avoid a gross error stemming from exhaustive checking of all union options."""
+    try:
+        return handler(value)
+    except ValidationError as error:
+        for err in error.errors():
+            error_type, error_msg = get_error_type_msg(info.field_name, err)
+            if not error_type or error_msg:  # We didn't cover this error, so raise default.
+                raise
+            raise PydanticCustomError(error_type, error_msg) from error
+
+
 @dataclass(config=get_model_config(title="Common Mesh Properties"))
 class CommonMesh:
     """Validation schema for common properties of meshes."""
 
     mode: tuple[Literal[RenderingMode.TRIANGLES]] = Field(
+        ...,
         description=f"The rendering mode of the mesh. Only {RenderingMode.TRIANGLES.value} are supported.",
-        json_schema_extra={"errorMessage": f"Rendering mode must be {RenderingMode.TRIANGLES.value}."},
+        json_schema_extra={"errorMessage": render_mode_error},
     )
+
     primitives: int = Field(
         ...,
         ge=1,
         le=2,
         description="Number of geometry primitives to be rendered with the given material.",
-        json_schema_extra={
-            "errorMessage": (
-                "Number of primitives in the mesh must be 1, or 2 when an additional transparent material is used."
-            )
-        },
+        json_schema_extra={"errorMessage": primitives_error},
     )
+
     indices: tuple[Literal[IntegerType.u16]] = Field(
+        ...,
         description="The index of the accessor that contains the vertex indices.",
-        json_schema_extra={"errorMessage": f"Indices must be '{IntegerType.u16.value}' single-item array."},
+        json_schema_extra={"errorMessage": indices_error},
     )
+
     instances: Literal[1] = Field(
+        ...,
         description="Number of instances to render.",
-        json_schema_extra={"errorMessage": "Only 1 instance per mesh is supported."},
+        json_schema_extra={"errorMessage": instances_error},
     )
+
     size: int = Field(
         ...,
         gt=0,
-        le=524288,
+        le=MAXIMUM_MESH_SIZE * 1024,  # Convert to bytes.
         description="Byte size. Buffers stored as GLB binary chunk have an implicit limit of (2^32)-1 bytes.",
         json_schema_extra={
             "errorMessage": {
-                "maximum": "Maximum allowed mesh size is 512 kB.",
-                "exclusiveMinimum": "Mesh has 0 bytes, seems to be empty!",
+                "maximum": mesh_size_errors["greater_than"],
+                "exclusiveMinimum": mesh_size_errors["less_than_equal"],
             }
         },
     )
+    # Wrap all field validators in a custom error validator.
+    val_wrap = field_validator("*", mode="wrap")(custom_error_validator)
 
 
 if __name__ == "__main__":
