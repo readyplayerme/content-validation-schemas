@@ -8,18 +8,30 @@ from pydantic.alias_generators import to_camel
 from pydantic.json_schema import GenerateJsonSchema
 
 
+def add_metaschema(schema: dict[str, Any]) -> None:
+    """Add the JSON schema metaschema to a schema."""
+    schema["$schema"] = GenerateJsonSchema.schema_dialect
+
+
+def add_schema_id(schema: dict[str, Any], model: type["PydanticBaseModel"]) -> None:
+    """Add the JSON schema id based on the model name to a schema."""
+    schema["$id"] = f"{(name := model.__name__)[0].lower() + name[1:]}.schema.json"
+
+
+def remove_keywords_from_properties(schema: dict[str, Any], keywords: list[str]) -> None:
+    """Remove given keywords from properties of a schema."""
+    for prop in schema.get("properties", {}).values():
+        for kw in keywords:
+            prop.pop(kw, None)
+
+
 def json_schema_extra(schema: dict[str, Any], model: type["PydanticBaseModel"]) -> None:
     """Provide extra JSON schema properties."""
-    # Add id.
-    schema |= {
-        "$schema": GenerateJsonSchema.schema_dialect,
-        # Get the "outer" class name with a lower case first letter.
-        "$id": f"{(name := model.__name__)[0].lower() + name[1:]}.schema.json",
-    }
+    # Add metaschema and id.
+    add_metaschema(schema)
+    add_schema_id(schema, model)
     # Remove "title" & "default" from properties.
-    for prop in schema.get("properties", {}).values():
-        prop.pop("title", None)
-        prop.pop("default", None)
+    remove_keywords_from_properties(schema, ["title", "default"])
 
 
 def get_model_config(**kwargs: Any) -> ConfigDict:
