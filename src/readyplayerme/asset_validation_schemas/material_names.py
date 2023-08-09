@@ -1,3 +1,4 @@
+"""Model for allowed names of materials for different asset types."""
 from enum import Enum
 from typing import Annotated, Any, Literal
 
@@ -10,7 +11,6 @@ from pydantic import (
     create_model,
     field_validator,
 )
-from pydantic.functional_validators import WrapValidator
 from pydantic_core import PydanticCustomError
 
 from readyplayerme.asset_validation_schemas.basemodel import get_model_config
@@ -33,6 +33,8 @@ material_names = {
 
 
 class OutfitMaterialNames(str, Enum):
+    """Allowed names of materials for outfit assets."""
+
     bottom = material_names["bottom"]
     footwear = material_names["footwear"]
     top = material_names["top"]
@@ -40,6 +42,8 @@ class OutfitMaterialNames(str, Enum):
 
 
 class HeroAvatarMaterialNames(str, Enum):
+    """Allowed names of materials for hero avatar assets."""
+
     bottom = material_names["bottom"]
     footwear = material_names["footwear"]
     top = material_names["top"]
@@ -54,7 +58,7 @@ class HeroAvatarMaterialNames(str, Enum):
     headwear = material_names["headwear"]
 
 
-ERROR_CODE = "MATERIAL_NAMES"
+ERROR_CODE = "MATERIAL_NAME"
 DOCS_URL = "https://docs.readyplayer.me/asset-creation-guide/validation/validation-checks/"
 
 
@@ -65,11 +69,23 @@ def get_error_type_msg(field_name: str, value: Any) -> tuple[str, str] | tuple[N
     """
     match field_name:
         case key if key in material_names:
-            return ERROR_CODE, f"Material name should be '{material_names[key]}'. Found '{value}' instead." + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL)
+            return (
+                ERROR_CODE,
+                f"Material name should be '{material_names[key]}'. Found '{value}' instead."
+                + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
+            )
         case "outfit":
-            return ERROR_CODE, f"Material name should be one of {', '.join(OutfitMaterialNames)}. Found '{value}' instead." + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL)
+            return (
+                ERROR_CODE,
+                f"Material name should be one of {', '.join(OutfitMaterialNames)}. Found '{value}' instead."
+                + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
+            )
         case key if key in ("non_customizable_avatar", "nonCustomizableAvatar"):
-            return ERROR_CODE, f"Material name should be one of {', '.join(HeroAvatarMaterialNames)}. Found '{value}' instead." + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL)
+            return (
+                ERROR_CODE,
+                f"Material name should be one of {', '.join(HeroAvatarMaterialNames)}. Found '{value}' instead."
+                + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
+            )
         case _:
             return None, None
 
@@ -84,19 +100,16 @@ def custom_error_validator(value: Any, handler: ValidatorFunctionWrapHandler, in
     except ValidationError as error:
         for err in error.errors():
             error_type, error_msg = get_error_type_msg(info.field_name, err["input"])
-            if not error_type or error_msg:  # We didn't cover this error, so raise default.
-                raise
-            raise PydanticCustomError(error_type, error_msg) from error
+            if error_type and error_msg:
+                raise PydanticCustomError(error_type, error_msg) from error
+            raise  # We didn't cover this error, so raise default.
 
 
 def get_material_name_type(material_name: str) -> Annotated:
-    """Return a constrained positive integer field type with custom error messages.
-
-    :param le: The (inclusive) maximum of the integer (less-equal).
-    """
+    """Return a constrained positive integer field type with custom error messages."""
     return Annotated[
         Literal[material_name],
-        Field(json_schema_extra={"errorMessage": "Material name should be '%s'. Found ${0} instead." % material_name})
+        Field(json_schema_extra={"errorMessage": "Material name should be '%s'. Found ${0} instead." % material_name}),
     ]
 
 
@@ -111,13 +124,14 @@ def get_material_name_field_definitions(material_names: dict[str, str]) -> Any:
     }
 
 
+# Define fields for outfit assets and hero avatar assets.
 outfit_field = Annotated[
     OutfitMaterialNames,
     Field(
         json_schema_extra={
             "errorMessage": "Material name should be one of %s. Found ${0} instead." % ", ".join(OutfitMaterialNames)
         }
-    )
+    ),
 ]
 
 hero_avatar_field = Annotated[
@@ -127,16 +141,16 @@ hero_avatar_field = Annotated[
             "errorMessage": "Material name should be one of %s. Found ${0} instead."
             % ", ".join(HeroAvatarMaterialNames)
         }
-    )
+    ),
 ]
 
 # Wrap all field validators in a custom error validator.
-val_wrap = field_validator("*", mode="wrap")(custom_error_validator)
+wrapped_validator = field_validator("*", mode="wrap")(custom_error_validator)
 
 MaterialNamesModel: type[PydanticBaseModel] = create_model(
     "MaterialNames",
-    __config__=get_model_config(title="Material Names", validate_default=False),
-    __validators__={"*": val_wrap},
+    __config__=get_model_config(title="Material Names"),
+    __validators__={"*": wrapped_validator},
     **get_material_name_field_definitions(material_names),
     outfit=(outfit_field, None),
     non_customizable_avatar=(hero_avatar_field, None),

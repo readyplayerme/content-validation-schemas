@@ -10,7 +10,7 @@ from pydantic import (
     field_validator,
 )
 from pydantic.dataclasses import dataclass
-from pydantic_core import ErrorDetails, PydanticCustomError
+from pydantic_core import PydanticCustomError
 
 from readyplayerme.asset_validation_schemas.basemodel import get_model_config
 
@@ -33,7 +33,7 @@ class RenderingMode(str, Enum):
 MAXIMUM_MESH_SIZE = 512  # Kb
 
 render_mode_error = f"Rendering mode must be {RenderingMode.TRIANGLES.value}."
-primitives_error = "Number of primitives in the mesh must be 1, or 2 when an additional transparent material is used."
+primitives_error = "Number of primitives in the mesh must be 1."
 indices_error = f"Indices must be '{IntegerType.u16.value}' single-item array."
 instances_error = "Only 1 instance per mesh is supported."
 mesh_size_errors = {
@@ -42,12 +42,12 @@ mesh_size_errors = {
 }
 
 
-def get_error_type_msg(field_name: str, error: ErrorDetails) -> tuple[str, str] | tuple[None, None]:
+def get_error_type_msg(field_name: str, error: dict[str, Any]) -> tuple[str, str] | tuple[None, None]:
     """Convert the error to a custom error type and message.
 
     If the error type is not covered, return a None-tuple.
     """
-    match field_name, error["ctx"]:
+    match field_name, error:
         case "mode", _:
             return "RENDER_MODE", render_mode_error
         case "primitives", _:
@@ -70,10 +70,10 @@ def custom_error_validator(value: Any, handler: ValidatorFunctionWrapHandler, in
         return handler(value)
     except ValidationError as error:
         for err in error.errors():
-            error_type, error_msg = get_error_type_msg(info.field_name, err)
-            if not error_type or error_msg:  # We didn't cover this error, so raise default.
-                raise
-            raise PydanticCustomError(error_type, error_msg) from error
+            error_type, error_msg = get_error_type_msg(info.field_name, err["ctx"])
+            if error_type and error_msg:
+                raise PydanticCustomError(error_type, error_msg) from error
+            raise  # We didn't cover this error, so raise default.
 
 
 @dataclass(config=get_model_config(title="Common Mesh Properties"))
@@ -89,7 +89,7 @@ class CommonMesh:
     primitives: int = Field(
         ...,
         ge=1,
-        le=2,
+        le=1,
         description="Number of geometry primitives to be rendered with the given material.",
         json_schema_extra={"errorMessage": primitives_error},
     )
