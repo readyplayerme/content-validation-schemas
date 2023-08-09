@@ -223,6 +223,10 @@ disallow_any_generics = true
 check_untyped_defs = true
 no_implicit_reexport = true
 
+[[tool.mypy.overrides]]
+module = "readyplayerme.*"
+ignore_missing_imports = true
+
 # for strict mypy:
 disallow_untyped_defs = false
 
