@@ -59,6 +59,8 @@ class HeroAvatarMaterialNames(str, Enum):
 
 
 ERROR_CODE = "MATERIAL_NAME"
+ERROR_MSG = "Material name should be {material_name}. Found {value} instead."
+ERROR_MSG_MULTI = "Material name should be one of {material_names}. Found {value} instead."
 DOCS_URL = "https://docs.readyplayer.me/asset-creation-guide/validation/validation-checks/"
 
 
@@ -71,19 +73,19 @@ def get_error_type_msg(field_name: str, value: Any) -> tuple[str, str] | tuple[N
         case key if key in material_names:
             return (
                 ERROR_CODE,
-                f"Material name should be '{material_names[key]}'. Found '{value}' instead."
+                ERROR_MSG.format(material_name=material_names[key], value=value)
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
         case "outfit":
             return (
                 ERROR_CODE,
-                f"Material name should be one of {', '.join(OutfitMaterialNames)}. Found '{value}' instead."
+                ERROR_MSG_MULTI.format(material_names=", ".join(OutfitMaterialNames), value=value)
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
         case key if key in ("non_customizable_avatar", "nonCustomizableAvatar"):
             return (
                 ERROR_CODE,
-                f"Material name should be one of {', '.join(HeroAvatarMaterialNames)}. Found '{value}' instead."
+                ERROR_MSG_MULTI.format(material_names=", ".join(HeroAvatarMaterialNames), value=value)
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
         case _:
@@ -109,7 +111,7 @@ def get_material_name_type(material_name: str) -> Annotated:
     """Return a constrained positive integer field type with custom error messages."""
     return Annotated[
         Literal[material_name],
-        Field(json_schema_extra={"errorMessage": "Material name should be '%s'. Found ${0} instead." % material_name}),
+        Field(json_schema_extra={"errorMessage": ERROR_MSG.format(material_name=material_name, value="${0}")}),
     ]
 
 
@@ -129,7 +131,7 @@ outfit_field = Annotated[
     OutfitMaterialNames,
     Field(
         json_schema_extra={
-            "errorMessage": "Material name should be one of %s. Found ${0} instead." % ", ".join(OutfitMaterialNames)
+            "errorMessage": ERROR_MSG_MULTI.format(material_names=", ".join(OutfitMaterialNames), value="${0}")
         }
     ),
 ]
@@ -138,8 +140,7 @@ hero_avatar_field = Annotated[
     HeroAvatarMaterialNames,
     Field(
         json_schema_extra={
-            "errorMessage": "Material name should be one of %s. Found ${0} instead."
-            % ", ".join(HeroAvatarMaterialNames)
+            "errorMessage": ERROR_MSG_MULTI.format(material_names=", ".join(HeroAvatarMaterialNames), value="${0}")
         }
     ),
 ]
