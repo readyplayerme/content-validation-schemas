@@ -62,8 +62,8 @@ HeroAvatarMaterialNames = create_enum_class(
 
 
 ERROR_CODE = "MATERIAL_NAME"
-ERROR_MSG = "Material name should be {valid_name}. Found {value} instead."
-ERROR_MSG_MULTI = "Material name should be one of {valid_names}. Found {value} instead."
+ERROR_MSG = "Material name should be {valid_value}. Found {value} instead."
+ERROR_MSG_MULTI = "Material name should be one of {valid_values}. Found {value} instead."
 DOCS_URL = "https://docs.readyplayer.me/asset-creation-guide/validation/validation-checks/"
 
 
@@ -76,19 +76,21 @@ def get_error_type_msg(field_name: str, value: Any) -> tuple[str, str] | tuple[N
         case key if key in AllMaterialNames.__members__:  # type: ignore[attr-defined]
             return (
                 ERROR_CODE,
-                ERROR_MSG.format(valid_name=getattr(AllMaterialNames, key).value, value=value)
+                ERROR_MSG.format(valid_value=getattr(AllMaterialNames, key).value, value=value)
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
         case "outfit":
             return (
                 ERROR_CODE,
-                ERROR_MSG_MULTI.format(valid_names=", ".join(cast(Iterable[str], OutfitMaterialNames)), value=value)
+                ERROR_MSG_MULTI.format(valid_values=", ".join(cast(Iterable[str], OutfitMaterialNames)), value=value)
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
         case key if key in ("non_customizable_avatar", "nonCustomizableAvatar"):
             return (
                 ERROR_CODE,
-                ERROR_MSG_MULTI.format(valid_names=", ".join(cast(Iterable[str], HeroAvatarMaterialNames)), value=value)
+                ERROR_MSG_MULTI.format(
+                    valid_values=", ".join(cast(Iterable[str], HeroAvatarMaterialNames)), value=value
+                )
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
     return None, None
@@ -114,7 +116,7 @@ def get_const_str_field_type(const: str) -> Any:
     return Annotated[
         # While this is not really a Literal, since we illegally use a variable, it works as "const" in json schema.
         Literal[const],
-        Field(json_schema_extra={"errorMessage": ERROR_MSG.format(valid_name=const, value="${0}")}),
+        Field(json_schema_extra={"errorMessage": ERROR_MSG.format(valid_value=const, value="${0}")}),
     ]
 
 
@@ -135,7 +137,7 @@ outfit_field = Annotated[
     Field(
         json_schema_extra={
             "errorMessage": ERROR_MSG_MULTI.format(
-                valid_names=", ".join(cast(Iterable[str], OutfitMaterialNames)), value="${0}"
+                valid_values=", ".join(cast(Iterable[str], OutfitMaterialNames)), value="${0}"
             )
         }
     ),
@@ -146,7 +148,7 @@ hero_avatar_field = Annotated[
     Field(
         json_schema_extra={
             "errorMessage": ERROR_MSG_MULTI.format(
-                valid_names=", ".join(cast(Iterable[str], HeroAvatarMaterialNames)), value="${0}"
+                valid_values=", ".join(cast(Iterable[str], HeroAvatarMaterialNames)), value="${0}"
             )
         }
     ),
