@@ -1,6 +1,7 @@
 """Model for allowed names of materials for different asset types."""
+from collections.abc import Container, Iterable
 from enum import Enum
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, cast
 
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import (
@@ -32,35 +33,37 @@ material_names = {
 }
 
 
-class OutfitMaterialNames(str, Enum):
-    """Allowed names of materials for outfit assets."""
+# Instead of spelling out members and values for each enum, create classes dynamically.
+def create_enum_class(name: str, dictionary: dict[str, str], keys: Container[str] | None = None) -> Enum:
+    """Create an string-enum class from a dictionary.
 
-    bottom = material_names["bottom"]
-    footwear = material_names["footwear"]
-    top = material_names["top"]
-    body = material_names["body"]
+    If keys are provided, only the keys will be included in the enum class.
+    """
+
+    def is_key_set(item: tuple[str, str]) -> bool:
+        return item[0] in keys if keys else True
+
+    if keys is None:
+        members = dictionary
+    else:
+        members = dict(filter(is_key_set, dictionary.items()))
+    return Enum(name, members, type=str)
 
 
-class HeroAvatarMaterialNames(str, Enum):
-    """Allowed names of materials for hero avatar assets."""
+AllMaterialNames = create_enum_class("AllMaterialNames", material_names)
 
-    bottom = material_names["bottom"]
-    footwear = material_names["footwear"]
-    top = material_names["top"]
-    body = material_names["body"]
-    head = material_names["head"]
-    eye = material_names["eye"]
-    teeth = material_names["teeth"]
-    hair = material_names["hair"]
-    beard = material_names["beard"]
-    facewear = material_names["facewear"]
-    glasses = material_names["glasses"]
-    headwear = material_names["headwear"]
+OutfitMaterialNames = create_enum_class("OutfitMaterialNames", material_names, {"bottom", "footwear", "top", "body"})
+
+HeroAvatarMaterialNames = create_enum_class(
+    "HeroAvatarMaterialNames",
+    material_names,
+    {"bottom", "footwear", "top", "body", "head", "eye", "teeth", "hair", "beard", "facewear", "glasses", "headwear"},
+)
 
 
 ERROR_CODE = "MATERIAL_NAME"
-ERROR_MSG = "Material name should be {material_name}. Found {value} instead."
-ERROR_MSG_MULTI = "Material name should be one of {material_names}. Found {value} instead."
+ERROR_MSG = "Material name should be {valid_name}. Found {value} instead."
+ERROR_MSG_MULTI = "Material name should be one of {valid_names}. Found {value} instead."
 DOCS_URL = "https://docs.readyplayer.me/asset-creation-guide/validation/validation-checks/"
 
 
@@ -70,26 +73,25 @@ def get_error_type_msg(field_name: str, value: Any) -> tuple[str, str] | tuple[N
     If the error type is not covered, return a None-tuple.
     """
     match field_name:
-        case key if key in material_names:
+        case key if key in AllMaterialNames.__members__:  # type: ignore[attr-defined]
             return (
                 ERROR_CODE,
-                ERROR_MSG.format(material_name=material_names[key], value=value)
+                ERROR_MSG.format(valid_name=getattr(AllMaterialNames, key).value, value=value)
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
         case "outfit":
             return (
                 ERROR_CODE,
-                ERROR_MSG_MULTI.format(material_names=", ".join(OutfitMaterialNames), value=value)
+                ERROR_MSG_MULTI.format(valid_names=", ".join(cast(Iterable[str], OutfitMaterialNames)), value=value)
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
         case key if key in ("non_customizable_avatar", "nonCustomizableAvatar"):
             return (
                 ERROR_CODE,
-                ERROR_MSG_MULTI.format(material_names=", ".join(HeroAvatarMaterialNames), value=value)
+                ERROR_MSG_MULTI.format(valid_names=", ".join(cast(Iterable[str], HeroAvatarMaterialNames)), value=value)
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
-        case _:
-            return None, None
+    return None, None
 
 
 def custom_error_validator(value: Any, handler: ValidatorFunctionWrapHandler, info: FieldValidationInfo) -> Any:
@@ -107,40 +109,45 @@ def custom_error_validator(value: Any, handler: ValidatorFunctionWrapHandler, in
             raise  # We didn't cover this error, so raise default.
 
 
-def get_material_name_type(material_name: str) -> Annotated:
-    """Return a constrained positive integer field type with custom error messages."""
+def get_const_str_field_type(const: str) -> Any:
+    """Return a constant-string field type with custom error messages."""
     return Annotated[
-        Literal[material_name],
-        Field(json_schema_extra={"errorMessage": ERROR_MSG.format(material_name=material_name, value="${0}")}),
+        # While this is not really a Literal, since we illegally use a variable, it works as "const" in json schema.
+        Literal[const],
+        Field(json_schema_extra={"errorMessage": ERROR_MSG.format(valid_name=const, value="${0}")}),
     ]
 
 
-def get_material_name_field_definitions(material_names: dict[str, str]) -> Any:
-    """Turn simple integer limits into a dict of constrained positive integer field types with custom error messages."""
+def get_field_definitions(field_input: Enum) -> Any:
+    """Turn a StrEnum into field types of string-constants."""
     return {
-        field_name: (  # Tuple of (type definition, default value).
-            get_material_name_type(material_name),
+        member.name: (  # Tuple of (type definition, default value).
+            get_const_str_field_type(member.value),
             None,  # Default value.
         )
-        for field_name, material_name in material_names.items()
+        for member in field_input  # type: ignore[attr-defined]
     }
 
 
 # Define fields for outfit assets and hero avatar assets.
 outfit_field = Annotated[
-    OutfitMaterialNames,
+    OutfitMaterialNames,  # type: ignore[valid-type]
     Field(
         json_schema_extra={
-            "errorMessage": ERROR_MSG_MULTI.format(material_names=", ".join(OutfitMaterialNames), value="${0}")
+            "errorMessage": ERROR_MSG_MULTI.format(
+                valid_names=", ".join(cast(Iterable[str], OutfitMaterialNames)), value="${0}"
+            )
         }
     ),
 ]
 
 hero_avatar_field = Annotated[
-    HeroAvatarMaterialNames,
+    HeroAvatarMaterialNames,  # type: ignore[valid-type]
     Field(
         json_schema_extra={
-            "errorMessage": ERROR_MSG_MULTI.format(material_names=", ".join(HeroAvatarMaterialNames), value="${0}")
+            "errorMessage": ERROR_MSG_MULTI.format(
+                valid_names=", ".join(cast(Iterable[str], HeroAvatarMaterialNames)), value="${0}"
+            )
         }
     ),
 ]
@@ -151,8 +158,8 @@ wrapped_validator = field_validator("*", mode="wrap")(custom_error_validator)
 MaterialNamesModel: type[PydanticBaseModel] = create_model(
     "MaterialNames",
     __config__=get_model_config(title="Material Names"),
-    __validators__={"*": wrapped_validator},
-    **get_material_name_field_definitions(material_names),
+    __validators__={"*": wrapped_validator},  # type: ignore[dict-item]
+    **get_field_definitions(AllMaterialNames),
     outfit=(outfit_field, None),
     non_customizable_avatar=(hero_avatar_field, None),
 )
