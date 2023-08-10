@@ -152,7 +152,7 @@ ignore = [
   # Exclude self, cls, args, kwargs from annotation, allow dynamically typed expressions (typing.Any) in type annotations
   "ANN101", "ANN102", "ANN002", "ANN003", "ANN401",
   # Don't require documentation for every function parameter and magic methods.
-  "D417", "D102", "D105"
+  "D417", "D102", "D105", "D107"
 ]
 builtins = ["_"]
 unfixable = [
