@@ -16,11 +16,11 @@
       "contains": {
         "type": "string",
         "pattern": "NORMAL:f32|POSITION:f32|TEXCOORD_0:f32",
-        "errorMessage": "Mesh ${2/name} requires at least 5 vertex attributes: position, normal, 1 UV set, joint influences, and weights. Found ${1/length} attributes: ${1}."
+        "errorMessage": "Mesh ${2/name} requires at least 3 vertex attributes: position, normal and 1 UV set. Found ${1/length} attributes: ${1}."
       },
       "minContains": 3,
       "uniqueItems": true,
-      "errorMessage": "Mesh ${1/name} requires at least 5 vertex attributes: position, normal, 1 UV set, joint influences, and weights. Found ${0/length} attributes: ${0}."
+      "errorMessage": "Mesh ${1/name} requires at least 3 vertex attributes: position, normal and 1 UV set. Found ${0/length} attributes: ${0}."
     },
     "skinned": {
       "description": "Attributes for skinned meshes. Optional tangents.",
