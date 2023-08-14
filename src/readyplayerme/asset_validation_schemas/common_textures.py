@@ -9,9 +9,10 @@ Co-authored-by: Olaf Haag <Olaf-Wolf3D@users.noreply.github.com>
 Co-authored-by: Ivan Sanandres Gutierrez <IvanRPM@users.noreply.github.com>
 """
 from enum import Enum
-from typing import Literal
+from typing import Literal, TypeAlias
 
 from pydantic import ConfigDict, Field, ValidationError
+from pydantic.json_schema import models_json_schema
 
 from readyplayerme.asset_validation_schemas.basemodel import BaseModel
 
@@ -25,28 +26,31 @@ FILE_SIZE_ERROR_MSG = "Texture map exceeds maximum allowed storage size of {vali
 GPU_SIZE_ERROR_MSG = "Texture map exceeds maximum allowed GPU size of {valid_value} MB when fully decompressed."
 
 
-class ResolutionType(str, Enum):
-    """Image resolution data used for textures. Power of 2 and square."""
+ResolutionType: TypeAlias = Literal[
+    "1x1",
+    "2x2",
+    "4x4",
+    "8x8",
+    "16x16",
+    "32x32",
+    "64x64",
+    "128x128",
+    "256x256",
+    "512x512",
+    "1024x1024",
+]
 
-    _1x1 = "1x1"
-    _2x2 = "2x2"
-    _4x4 = "4x4"
-    _8x8 = "8x8"
-    _16x16 = "16x16"
-    _32x32 = "32x32"
-    _64x64 = "64x64"
-    _128x128 = "128x128"
-    _256x256 = "256x256"
-    _512x512 = "512x512"
-    _1024x1024 = "1024x1024"
+
+class TextureSlot(str, Enum):
+    """Available texture inputs for materials."""
+
+    normal_texture = "normalTexture"
+    base_color_texture = "baseColorTexture"
+    emissive_texture = "emissiveTexture"
+    metallic_roughness_texture = "metallicRoughnessTexture"
+    occlusion_texture = "occlusionTexture"
 
     def __str__(self):
-        """
-        Get a string representation of the ResolutionType enum value.
-
-        Returns:
-        str: The string representation of the enum value.
-        """
         return self.value
 
 
@@ -64,9 +68,7 @@ class CommonTexture(BaseModel):
     compression: str
     resolution: ResolutionType = Field(
         ...,
-        json_schema_extra={
-            "errorMessages": RESOLUTION_ERROR_MSG.format(valid_value=str(list(ResolutionType)[-1]), value="${0}")
-        },
+        description="Image resolution data used for textures. Power of 2 and square.",
     )
     size: int = Field(
         ...,
@@ -80,26 +82,54 @@ class CommonTexture(BaseModel):
     )
 
 
+class FullPBRTextureSet(CommonTexture):
+    """Accepting any texture type."""
+
+    slots: list[TextureSlot] = Field(..., min_items=1, max_items=5)
+
+
+class NormalMapTextureSet(CommonTexture):
+    """Accepting only normal and occlusion textures."""
+
+    slots: list[Literal[TextureSlot.normal_texture, TextureSlot.occlusion_texture]] = Field(
+        ..., min_items=1, max_items=1
+    )
+
+
+class NormalMap(BaseModel):
+    """Normal map validation schema."""
+
+    properties: list[NormalMapTextureSet]
+
+
+class FullPBR(BaseModel):
+    """Full PBR validation schema."""
+
+    properties: list[FullPBRTextureSet]
+
+
+_, top_level_schema = models_json_schema([(NormalMap, "validation"), (FullPBR, "validation")])
+
 # Print the generated JSON schema with indentation
 if __name__ == "__main__":
     import json
     import logging
 
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(filename=".temp/commonTexture.log", filemode="w", encoding="utf-8", level=logging.DEBUG)
     # Convert model to JSON schema.
-    logging.debug(json.dumps(CommonTexture.model_json_schema(), indent=2))
+    logging.debug(json.dumps(top_level_schema, indent=2))
 
     # Example of validation in Python
     try:
         CommonTexture(
             name="normalmap",
             uri="path/to/normal.png",
-            instances=0,
-            mime_type="image/webP",
+            instances=1,
+            mime_type="image/png",
             compression="default",
-            resolution="2048x1024",
-            size=3097152,
-            gpu_size=20291456,
+            resolution="1024x1024",
+            size=1097152,
+            gpu_size=1291456,
         )
     except ValidationError as error:
         logging.debug("\nValidation Errors:\n %s" % error)
