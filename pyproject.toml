@@ -69,7 +69,7 @@ post-install-commands = [
 ]
 
 [tool.hatch.envs.default.scripts]
-install-precommit = "pre-commit install"
+install-precommit = "pre-commit install -t pre-commit -t commit-msg -t pre-push"
 test = "pytest {args:tests}"
 test-cov = "coverage run -m pytest {args:tests}"
 cov-report = [
