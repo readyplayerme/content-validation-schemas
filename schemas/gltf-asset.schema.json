@@ -23,7 +23,7 @@
         "hair",
         "headwear",
         "lipshape",
-        "nonCustomizableAvatar",
+        "heroAvatar",
         "noseshape",
         "outfit",
         "shirt",
@@ -31,7 +31,7 @@
       ],
       "errorMessage": {
         "type": "Asset type should be a string.",
-        "enum": "Asset type should be one of the following: beard, bottom, eye, eyebrows, eyeshape, facemask, faceshape, facewear, footwear, glasses, hair, headwear, lipshape, nonCustomizableAvatar, noseshape, outfit, shirt, top. Found ${0}."
+        "enum": "Asset type should be one of the following: beard, bottom, eye, eyebrows, eyeshape, facemask, faceshape, facewear, footwear, glasses, hair, headwear, lipshape, heroAvatar, noseshape, outfit, shirt, top. Found ${0}."
       }
     },
     "transforms": {
@@ -92,7 +92,9 @@
       "then": {
         "allOf": [
           { "$ref": "assetBottom.schema.json" },
-          { "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount" }
+          {
+            "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+          }
         ]
       }
     },
@@ -117,7 +119,9 @@
       "then": {
         "allOf": [
           { "$ref": "assetFootwear.schema.json" },
-          { "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount" }
+          {
+            "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+          }
         ]
       }
     },
@@ -158,17 +162,10 @@
     },
     {
       "if": {
-        "properties": { "assetType": { "const": "nonCustomizableAvatar" } },
+        "properties": { "assetType": { "const": "heroAvatar" } },
         "required": ["assetType"]
       },
-      "then": {
-        "allOf": [
-          { "$ref": "assetNonCustomizableAvatar.schema.json" },
-          {
-            "$ref": "assetNonCustomizableAvatar.schema.json#/$defs/nonCustomizableAvatarTextureCount"
-          }
-        ]
-      }
+      "then": { "$ref": "assetHeroAvatar.schema.json" }
     },
     {
       "if": {
@@ -191,7 +188,9 @@
       "then": {
         "allOf": [
           { "$ref": "assetTop.schema.json" },
-          { "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount" }
+          {
+            "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+          }
         ]
       }
     }
