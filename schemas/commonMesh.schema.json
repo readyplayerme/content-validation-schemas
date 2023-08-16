@@ -36,8 +36,8 @@
     "size": {
       "description": "Byte size. Buffers stored as GLB binary chunk have an implicit limit of (2^32)-1 bytes.",
       "type": "integer",
-      "maximum": 524288,
-      "errorMessage": "Maximum allowed mesh size is 512 kB."
+      "maximum": 2097152,
+      "errorMessage": "Maximum allowed size of each mesh in the file is 2 MB."
     }
   },
   "required": ["mode", "primitives"]
