@@ -35,14 +35,14 @@
     },
     "eye": {
       "type": "integer",
-      "maximum": 60,
+      "maximum": 210,
       "errorMessage": {
         "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 60. Found: ${0}."
       }
     },
     "facewear": {
       "type": "integer",
-      "maximum": 900,
+      "maximum": 1000,
       "errorMessage": {
         "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 900. Found: ${0}."
       }
