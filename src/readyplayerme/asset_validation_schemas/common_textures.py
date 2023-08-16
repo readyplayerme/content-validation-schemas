@@ -27,10 +27,6 @@ GPU_SIZE_ERROR_MSG = "Texture map exceeds maximum allowed GPU size of {valid_val
 
 
 ResolutionType: TypeAlias = Literal[
-    "1x1",
-    "2x2",
-    "4x4",
-    "8x8",
     "16x16",
     "32x32",
     "64x64",
@@ -85,10 +81,18 @@ class CommonTexture(BaseModel):
 class FullPBRTextureSet(CommonTexture):
     """Accepting any texture type."""
 
-    slots: list[TextureSlot] = Field(..., min_items=1, max_items=5)
+    slots: list[
+        Literal[
+            TextureSlot.normal_texture,
+            TextureSlot.base_color_texture,
+            TextureSlot.emissive_texture,
+            TextureSlot.metallic_roughness_texture,
+            TextureSlot.occlusion_texture,
+        ]
+    ] = Field(..., min_items=1, max_items=5)
 
 
-class NormalMapTextureSet(CommonTexture):
+class NormalOcclusionMapTextureSet(CommonTexture):
     """Accepting only normal and occlusion textures."""
 
     slots: list[Literal[TextureSlot.normal_texture, TextureSlot.occlusion_texture]] = Field(
@@ -99,7 +103,7 @@ class NormalMapTextureSet(CommonTexture):
 class NormalMap(BaseModel):
     """Normal map validation schema."""
 
-    properties: list[NormalMapTextureSet]
+    properties: list[NormalOcclusionMapTextureSet]
 
 
 class FullPBR(BaseModel):
@@ -121,7 +125,7 @@ if __name__ == "__main__":
 
     # Example of validation in Python
     try:
-        CommonTexture(
+        FullPBRTextureSet(
             name="normalmap",
             uri="path/to/normal.png",
             instances=1,
@@ -130,6 +134,7 @@ if __name__ == "__main__":
             resolution="1024x1024",
             size=1097152,
             gpu_size=1291456,
+            slots=["metallicRoughnessTexture", "occlusionTexture", "specularMap"],
         )
     except ValidationError as error:
         logging.debug("\nValidation Errors:\n %s" % error)

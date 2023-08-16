@@ -9,8 +9,6 @@ Co-authored-by: Olaf Haag <Olaf-Wolf3D@users.noreply.github.com>
 Co-authored-by: Ivan Sanandres Gutierrez <IvanRPM@users.noreply.github.com>
 """
 
-
-from pydantic import BaseModel as PydanticBaseModel
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
 from readyplayerme.asset_validation_schemas import common_mesh, common_textures
@@ -20,15 +18,10 @@ from readyplayerme.asset_validation_schemas.basemodel import BaseModel
 # TODO: Figure out how to reference other fields in error messages. Maybe use model_validator instead of field_validator
 
 
-class Mesh(PydanticBaseModel):
-    """
-    Mesh validation schema.
+class Mesh(BaseModel):
+    """inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword."""
 
-    This is a hack to create a 'properties' object.
-    inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.
-    """
-
-    properties: common_mesh.CommonMesh
+    properties: list[common_mesh.CommonMesh]
 
 
 class AssetGlasses(BaseModel):
@@ -55,27 +48,33 @@ if __name__ == "__main__":
     # Example of validation in Python
     try:
         AssetGlasses(
-            scenes="glass_scene",
-            meshes=Mesh(
-                properties=common_mesh.CommonMesh(
-                    mode=("LINES",), primitives=3, indices=("u8",), instances=2, size=int(1e7), extra_prop="no!"
-                ),
-            ),
-            materials="glass_material",
-            animations=None,
-            textures=common_textures.FullPBR(
-                properties=common_textures.CommonTexture(
-                    name="normalmap",
-                    uri="path/to/normal.asf",
-                    instances=1,
-                    mime_type="image/png",
-                    compression="default",
-                    resolution="1024x1024",
-                    size=1097152,
-                    gpu_size=1291456,
-                    slots=["normalTexture", "baseColorTexture"],
-                ),
-            ),
+            **{
+                "scenes": "glass_scene",
+                "meshes": {
+                    "properties": [
+                        common_mesh.CommonMesh(
+                            mode=("TRIANGLES",), primitives=1, indices=("u16",), instances=1, size=500
+                        )
+                    ]
+                },
+                "materials": "glass_material",
+                "animations": None,
+                "textures": {
+                    "properties": [
+                        {
+                            "name": ("normalmap"),
+                            "uri": ("path/to/normal.asf"),
+                            "instances": 1,
+                            "mime_type": "image/png",
+                            "compression": "default",
+                            "resolution": "1024x1024",
+                            "size": 1097152,
+                            "gpu_size": 1291456,
+                            "slots": ["normalTexture"],
+                        }
+                    ]
+                },
+            }
         )
 
     except ValidationError as error:
