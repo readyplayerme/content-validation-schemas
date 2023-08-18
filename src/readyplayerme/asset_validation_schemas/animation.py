@@ -46,22 +46,20 @@ class NoAnimation:
 
 
 if __name__ == "__main__":
-    import json
     import logging
-    from pathlib import Path
 
     from pydantic.json_schema import model_json_schema
     from pydantic_core import PydanticCustomError
 
-    Path(".temp").mkdir(exist_ok=True)
-    logging.basicConfig(
-        filename=f".temp/{Path(__file__).stem}.log", filemode="w", encoding="utf-8", level=logging.DEBUG
-    )
+    from readyplayerme.asset_validation_schemas.schema_io import write_json
+
+    logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
+
     # Demonstrate alternative way to convert a model to custom JSON schema.
     top_level_schema = model_json_schema(
         NoAnimation, schema_generator=GenerateAnimationJsonSchema  # type: ignore[arg-type]
     )
-    logging.debug(json.dumps(top_level_schema, indent=2))
+    write_json(top_level_schema)
 
     # Example of validation in Python.
     try:
