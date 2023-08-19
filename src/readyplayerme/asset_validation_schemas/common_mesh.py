@@ -123,18 +123,22 @@ class CommonMesh:
 
 
 if __name__ == "__main__":
-    import json
     import logging
 
     from pydantic import TypeAdapter
 
+    from readyplayerme.asset_validation_schemas.schema_io import write_json
+
     logging.basicConfig(level=logging.DEBUG)
     # Convert model to JSON schema.
-    logging.debug(json.dumps(TypeAdapter(CommonMesh).json_schema(), indent=2))
+    top_level_schema = TypeAdapter(CommonMesh).json_schema()
+    write_json(top_level_schema)
 
     # Example of validation in Python.
     try:
         # Multiple checks at once. Test non-existent field as well.
-        model = CommonMesh(mode=("LINES",), primitives=3, indices=("u8",), instances=2, size=int(1e7), extra_prop="no!")
+        model = CommonMesh(
+            mode=("LINES",), primitives=3, indices=("u8",), instances=2, size=int(1e7), extra_prop="no!"  # type: ignore
+        )
     except ValidationError as error:
         logging.debug("\nValidation Errors:\n %s", error)
