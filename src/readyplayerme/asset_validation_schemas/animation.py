@@ -19,7 +19,6 @@ class NoAnimation:
     """Empty animation data."""
 
     properties: list[object] = Field(
-        ...,
         max_length=0,
         description="List of animations.",
         json_schema_extra={
