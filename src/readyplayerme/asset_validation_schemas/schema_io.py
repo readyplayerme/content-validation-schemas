@@ -16,7 +16,11 @@ def write_json(json_obj: Any, path: Path | None = None) -> None:
     """
     if not path:
         Path(".temp").mkdir(exist_ok=True)
-        caller_filename = inspect.stack()[1].filename
-        path = Path(".temp") / Path(caller_filename).with_suffix(".json").name
-    with path.open("w", encoding="UTF-8") as target:
+        try:
+            file_name = json_obj["$id"]
+        except (TypeError, KeyError):
+            # Use caller's file name as a backup.
+            file_name = Path(inspect.stack()[1].filename).with_suffix(".json").name
+        path = Path(".temp") / file_name
+    with path.open("w", encoding="UTF-8") as target:  # type: ignore[union-attr] # We made sure path is set.
         json.dump(json_obj, target, indent=2)
