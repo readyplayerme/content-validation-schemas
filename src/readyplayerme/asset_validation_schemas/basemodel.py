@@ -5,7 +5,8 @@ from typing import Any
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import ConfigDict
 from pydantic.alias_generators import to_camel
-from pydantic.json_schema import GenerateJsonSchema
+from pydantic.json_schema import GenerateJsonSchema, JsonSchemaMode, JsonSchemaValue
+from pydantic_core import CoreSchema
 
 
 def add_metaschema(schema: dict[str, Any]) -> None:
@@ -59,6 +60,16 @@ class BaseModel(PydanticBaseModel, abc.ABC):
     """Global base class for all models."""
 
     model_config = get_model_config(title="Base Model", defer_build=True)
+
+
+class SchemaNoTitleAndDefault(GenerateJsonSchema):
+    """Generator for a JSON schema without titles and default values."""
+
+    def generate(self, schema: CoreSchema, mode: JsonSchemaMode = "validation") -> JsonSchemaValue:
+        _schema = super().generate(schema, mode)
+        remove_keywords_from_properties(_schema, ["title", "default"])
+        _schema.pop("title", None)
+        return _schema
 
 
 if __name__ == "__main__":

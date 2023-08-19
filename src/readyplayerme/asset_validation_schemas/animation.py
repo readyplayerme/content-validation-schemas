@@ -1,24 +1,12 @@
 """Sub-schemas for animation validation."""
 from pydantic import Field, ValidationError, field_validator
 from pydantic.dataclasses import dataclass
-from pydantic.json_schema import GenerateJsonSchema, JsonSchemaMode, JsonSchemaValue
-from pydantic_core import CoreSchema, ErrorDetails
+from pydantic_core import ErrorDetails
 
-from readyplayerme.asset_validation_schemas.basemodel import remove_keywords_from_properties
 from readyplayerme.asset_validation_schemas.validators import CustomValidator, ErrorMsgReturnType
 
 ANIMATION_ERROR = "AnimationError"
 ANIMATION_ERROR_MSG = "Animation is currently not supported."
-
-
-class GenerateAnimationJsonSchema(GenerateJsonSchema):
-    """Generate the animation model JSON schema."""
-
-    def generate(self, schema: CoreSchema, mode: JsonSchemaMode = "validation") -> JsonSchemaValue:
-        _schema = super().generate(schema, mode)
-        remove_keywords_from_properties(_schema, ["title", "default"])
-        _schema.pop("title", None)
-        return _schema
 
 
 def error_msg_func(field_name: str, error_details: ErrorDetails) -> ErrorMsgReturnType:  # noqa: ARG001
@@ -51,13 +39,14 @@ if __name__ == "__main__":
     from pydantic.json_schema import model_json_schema
     from pydantic_core import PydanticCustomError
 
+    from readyplayerme.asset_validation_schemas.basemodel import SchemaNoTitleAndDefault
     from readyplayerme.asset_validation_schemas.schema_io import write_json
 
     logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
 
     # Demonstrate alternative way to convert a model to custom JSON schema.
     top_level_schema = model_json_schema(
-        NoAnimation, schema_generator=GenerateAnimationJsonSchema  # type: ignore[arg-type]
+        NoAnimation, schema_generator=SchemaNoTitleAndDefault  # type: ignore[arg-type]
     )
     write_json(top_level_schema)
 
