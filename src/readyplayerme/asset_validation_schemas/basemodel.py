@@ -45,6 +45,7 @@ def get_model_config(**kwargs: Any) -> ConfigDict:
         "validate_default": False,
         "strict": True,
         "populate_by_name": True,
+        "use_enum_values": True,
         "extra": "forbid",
         "hide_input_in_errors": True,
         "alias_generator": to_camel,
