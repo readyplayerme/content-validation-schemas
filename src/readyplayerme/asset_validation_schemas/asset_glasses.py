@@ -9,13 +9,12 @@ Co-authored-by: Olaf Haag <Olaf-Wolf3D@users.noreply.github.com>
 Co-authored-by: Ivan Sanandres Gutierrez <IvanRPM@users.noreply.github.com>
 """
 
-from pydantic import ConfigDict, TypeAdapter, ValidationError
+from pydantic import ConfigDict, ValidationError
 
-from readyplayerme.asset_validation_schemas import common_mesh, common_textures
+from readyplayerme.asset_validation_schemas import common_mesh
+from readyplayerme.asset_validation_schemas.animation import NoAnimation
 from readyplayerme.asset_validation_schemas.basemodel import BaseModel
-
-# Defining constants
-# TODO: Figure out how to reference other fields in error messages. Maybe use model_validator instead of field_validator
+from readyplayerme.asset_validation_schemas.common_textures import TextureSchemaStandard
 
 
 class Mesh(BaseModel):
@@ -29,27 +28,28 @@ class AssetGlasses(BaseModel):
 
     model_config = ConfigDict(title="Glasses Asset")
 
-    scenes: str
+    scenes: object
     meshes: Mesh
-    materials: str
-    animations: str | None = None
-    textures: common_textures.FullPBR
+    materials: object
+    animations: NoAnimation
+    textures: TextureSchemaStandard
 
 
 # Print the generated JSON schema with indentation
 if __name__ == "__main__":
-    import json
     import logging
 
-    logging.basicConfig(filename=".temp/commonTexture.log", filemode="w", encoding="utf-8", level=logging.DEBUG)
+    from readyplayerme.asset_validation_schemas.schema_io import write_json
+
+    logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
     # Convert model to JSON schema.
-    logging.debug(json.dumps(TypeAdapter(AssetGlasses).json_schema(), indent=2))
+    write_json(AssetGlasses.model_json_schema())
 
     # Example of validation in Python
     try:
         AssetGlasses(
             **{
-                "scenes": "glass_scene",
+                "scenes": {},
                 "meshes": {
                     "properties": [
                         common_mesh.CommonMesh(
@@ -57,8 +57,8 @@ if __name__ == "__main__":
                         )
                     ]
                 },
-                "materials": "glass_material",
-                "animations": None,
+                "materials": {},
+                "animations": {"properties": []},
                 "textures": {
                     "properties": [
                         {
