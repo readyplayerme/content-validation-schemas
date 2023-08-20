@@ -3,6 +3,7 @@ from pydantic import Field, ValidationError, field_validator
 from pydantic.dataclasses import dataclass
 from pydantic_core import ErrorDetails
 
+from readyplayerme.asset_validation_schemas.schema_io import properties_comment
 from readyplayerme.asset_validation_schemas.validators import CustomValidator, ErrorMsgReturnType
 
 ANIMATION_ERROR = "AnimationError"
@@ -23,10 +24,7 @@ class NoAnimation:
         description="List of animations.",
         json_schema_extra={
             "errorMessage": ANIMATION_ERROR_MSG,
-            "$comment": (
-                "gltf-transform's inspect() creates a 'properties' object. "
-                "Do not confuse with the 'properties' keyword."
-            ),
+            "$comment": properties_comment,
         },
     )
     validation_wrapper = field_validator("*", mode="wrap")(CustomValidator(error_msg_func).custom_error_validator)

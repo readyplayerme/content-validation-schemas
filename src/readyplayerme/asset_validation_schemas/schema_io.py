@@ -4,6 +4,10 @@ import json
 from pathlib import Path
 from typing import Any
 
+properties_comment = (
+    "gltf-transform's inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword."
+)
+
 
 def write_json(json_obj: Any, path: Path | None = None) -> None:
     """Write JSON file.
