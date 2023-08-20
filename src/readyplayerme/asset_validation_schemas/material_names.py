@@ -1,5 +1,5 @@
 """Model for allowed names of materials for different asset types."""
-from collections.abc import Container, Iterable
+from collections.abc import Iterable
 from enum import Enum
 from typing import Annotated, Any, Literal, cast
 
@@ -15,6 +15,7 @@ from pydantic import (
 from pydantic_core import PydanticCustomError
 
 from readyplayerme.asset_validation_schemas.basemodel import get_model_config
+from readyplayerme.asset_validation_schemas.types import create_enum_class
 
 material_names = {
     "beard": "Wolf3D_Beard",
@@ -31,24 +32,6 @@ material_names = {
     "footwear": "Wolf3D_Outfit_Footwear",
     "top": "Wolf3D_Outfit_Top",
 }
-
-
-# Instead of spelling out members and values for each enum, create classes dynamically.
-def create_enum_class(name: str, dictionary: dict[str, str], keys: Container[str] | None = None) -> Enum:
-    """Create an string-enum class from a dictionary.
-
-    If keys are provided, only the keys will be included in the enum class.
-    """
-
-    def is_key_set(item: tuple[str, str]) -> bool:
-        return item[0] in keys if keys else True
-
-    if keys is None:
-        members = dictionary
-    else:
-        members = dict(filter(is_key_set, dictionary.items()))
-    return Enum(name, members, type=str)
-
 
 AllMaterialNames = create_enum_class("AllMaterialNames", material_names)
 
@@ -73,7 +56,7 @@ def get_error_type_msg(field_name: str, value: Any) -> tuple[str, str] | tuple[N
     If the error type is not covered, return a None-tuple.
     """
     match field_name:
-        case key if key in AllMaterialNames.__members__:  # type: ignore[attr-defined]
+        case key if key in AllMaterialNames.__members__:
             return (
                 ERROR_CODE,
                 ERROR_MSG.format(valid_value=getattr(AllMaterialNames, key).value, value=value)
@@ -168,12 +151,14 @@ MaterialNamesModel: type[PydanticBaseModel] = create_model(
 
 
 if __name__ == "__main__":
-    import json
     import logging
+
+    from readyplayerme.asset_validation_schemas.schema_io import write_json
 
     logging.basicConfig(level=logging.DEBUG)
     # Convert model to JSON schema.
-    logging.debug(json.dumps(MaterialNamesModel.model_json_schema(), indent=2))
+    write_json(MaterialNamesModel.model_json_schema())
+
     # Example of validation in Python.
     try:
         # Test example validation.
