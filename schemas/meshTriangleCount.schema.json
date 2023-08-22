@@ -35,16 +35,16 @@
     },
     "eye": {
       "type": "integer",
-      "maximum": 60,
+      "maximum": 210,
       "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 60. Found: ${0}."
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 210. Found: ${0}."
       }
     },
     "facewear": {
       "type": "integer",
-      "maximum": 900,
+      "maximum": 2000,
       "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 900. Found: ${0}."
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 2000. Found: ${0}."
       }
     },
     "glasses": {
@@ -56,9 +56,9 @@
     },
     "hair": {
       "type": "integer",
-      "maximum": 3000,
+      "maximum": 5000,
       "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 3000. Found: ${0}."
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 5000. Found: ${0}."
       }
     },
     "head": {
@@ -84,16 +84,16 @@
     },
     "outfitBottom": {
       "type": "integer",
-      "maximum": 6000,
+      "maximum": 7500,
       "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 6000. Found: ${0}."
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 7500. Found: ${0}."
       }
     },
     "outfitTop": {
       "type": "integer",
-      "maximum": 6000,
+      "maximum": 9000,
       "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 6000. Found: ${0}."
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 9000. Found: ${0}."
       }
     },
     "outfitFootwear": {
