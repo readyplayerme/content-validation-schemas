@@ -3,16 +3,19 @@ from collections.abc import Iterable
 from enum import Enum
 from typing import Annotated, Any, Literal, cast
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict, Field, ValidationError, field_validator
 from pydantic.alias_generators import to_snake
+from pydantic_core import ErrorDetails
 
-from readyplayerme.asset_validation_schemas.basemodel import PydanticBaseModel
+from readyplayerme.asset_validation_schemas.basemodel import PydanticBaseModel, get_model_config
 from readyplayerme.asset_validation_schemas.schema_io import properties_comment
 from readyplayerme.asset_validation_schemas.types import create_enum_class, get_enum_length
+from readyplayerme.asset_validation_schemas.validators import CustomValidator, ErrorMsgReturnType
 
 MAX_FILE_SIZE = 2  # in MB
 MAX_GPU_SIZE = 6  # in MB
 # TODO: Figure out how to reference other fields in Python error messages. Maybe use model_validator instead of field_validator
+TEXTURE_ERROR = "TextureError"
 INSTANCE_ERROR_MSG = "Texture map is unused."
 MIMETYPE_ERROR_MSG = "Texture map must be encoded as PNG or JPEG. Found {value} instead."
 RESOLUTION_ERROR_MSG = "Image resolution must be a power of 2 and square. Maximum {valid_value}. Found {value} instead."
@@ -22,7 +25,7 @@ MIN_MAP_COUNT_ERROR_MSG = (
     "Too few texture maps ({value})! This Asset type must have at least one base color texture map."
 )
 MAX_MAP_COUNT_ERROR_MSG = "Too many texture maps ({value})! Allowed: {valid_value}."
-SLOTS_ERROR_MSG = "This texture can only be used for slots: {valid_value}. Found {value} instead."
+SLOTS_ERROR_MSG = "This texture can only be used for slots: {valid_value}. Found '{value}' instead."
 MIN_SLOTS_ERROR_MSG = (
     "Too few material slots ({value}) occupied by this texture! "
     "It must be used in at least {valid_value} material slots."
@@ -56,6 +59,51 @@ TextureSlotNormalOcclusion: Enum = create_enum_class(
 )
 
 
+def error_msg_func_common(field_name: str, error_details: ErrorDetails) -> ErrorMsgReturnType:
+    """Return a custom error type and message for the texture model."""
+    match field_name:
+        case "instances":
+            return TEXTURE_ERROR, INSTANCE_ERROR_MSG
+        case "mime_type":
+            return TEXTURE_ERROR, MIMETYPE_ERROR_MSG.format(value=error_details.get("value"))
+        case "resolution":
+            return (
+                TEXTURE_ERROR,
+                RESOLUTION_ERROR_MSG.format(
+                    valid_value=next(reversed(Resolution)).value,  # type: ignore[call-overload] # Enum is reversible.
+                    value=error_details.get("value"),
+                ),
+            )
+        case "size":
+            return TEXTURE_ERROR, FILE_SIZE_ERROR_MSG.format(valid_value=MAX_FILE_SIZE)
+        case "gpu_size":
+            return TEXTURE_ERROR, GPU_SIZE_ERROR_MSG.format(valid_value=MAX_GPU_SIZE)
+
+    return None, None
+
+
+def error_msg_func_slots(field_name: str, error_details: ErrorDetails) -> ErrorMsgReturnType:  # noqa: ARG001
+    """Return a custom error type and message for the texture model."""
+    match error_details:
+        case {"type": "enum"}:
+            expected = error_details.get("ctx", {}).get("expected")
+            return TEXTURE_ERROR, SLOTS_ERROR_MSG.format(valid_value=expected, value=error_details.get("input"))
+        case {"type": "too_long"}:
+            return generate_length_error_msg(error_details, "max_length", MAX_SLOTS_ERROR_MSG)
+        case {"type": "too_short"}:
+            return generate_length_error_msg(error_details, "min_length", MIN_SLOTS_ERROR_MSG)
+    return None, None
+
+
+def generate_length_error_msg(error_details, length_type, error_msg_template):
+    """Generate an error message related to the length of an input value."""
+    expected = error_details.get("ctx", {}).get(length_type)
+    input_value = error_details.get("input")
+    if input_value is not None:
+        actual_length = len(input_value)
+    return TEXTURE_ERROR, error_msg_template.format(valid_value=expected, value=actual_length)
+
+
 class CommonTextureProperties(PydanticBaseModel):
     """Validation schema for common properties of texture maps."""
 
@@ -84,6 +132,9 @@ class CommonTextureProperties(PydanticBaseModel):
     gpu_size: int = Field(
         le=MAX_GPU_SIZE * 1024**2,
         json_schema_extra={"errorMessage": {"maximum": GPU_SIZE_ERROR_MSG.format(valid_value=MAX_GPU_SIZE)}},
+    )
+    validation_wrapper = field_validator("*", mode="wrap")(
+        CustomValidator(error_msg_func_common).custom_error_validator
     )
 
 
@@ -114,11 +165,16 @@ class TexturePropertiesStandard(CommonTextureProperties):
             }
         },
     )
+    validation_wrapper = field_validator("*", mode="wrap")(CustomValidator(error_msg_func_slots).custom_error_validator)
 
 
 class TextureSchemaStandard(PydanticBaseModel):
     """Texture schema for a single- or multi-mesh asset with standard PBR map support."""
 
+    model_config = get_model_config(
+        json_schema_extra={},
+        defer_build=True,
+    )
     properties: list[TexturePropertiesStandard] = Field(
         min_length=1,
         json_schema_extra={
@@ -146,6 +202,7 @@ class TexturePropertiesNormalOcclusion(CommonTextureProperties):
             }
         },
     )
+    validation_wrapper = field_validator("*", mode="wrap")(CustomValidator(error_msg_func_slots).custom_error_validator)
 
 
 class TextureSchemaNormalOcclusion(PydanticBaseModel):
@@ -169,7 +226,6 @@ class TextureSchemaNormalOcclusion(PydanticBaseModel):
 if __name__ == "__main__":
     import logging
 
-    from pydantic import ValidationError
     from pydantic.json_schema import models_json_schema
 
     from readyplayerme.asset_validation_schemas.basemodel import SchemaNoTitleAndDefault
@@ -185,16 +241,24 @@ if __name__ == "__main__":
 
     # Example of validation in Python
     try:
-        TexturePropertiesStandard(
+        TexturePropertiesNormalOcclusion(
             name="normalmap",
             uri="path/to/normal.png",
             instances=1,
             mime_type="image/png",
             compression="default",
             resolution="1024x1024",
-            size=1097152,
+            size=197152,
             gpu_size=1291456,
-            slots=["metallicRoughnessTexture", "occlusionTexture", "specularMap"],
+            slots=[
+                "baseColor",
+                "test",
+                "asd",
+                "gasad",
+                "normalTexture",
+                "normalTexture",
+                "normalTexture",
+            ],
         )
     except ValidationError as error:
         logging.debug("\nValidation Errors:\n %s" % error)
