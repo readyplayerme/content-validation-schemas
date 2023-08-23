@@ -26,11 +26,12 @@ def remove_keywords_from_properties(schema: dict[str, Any], keywords: list[str])
             prop.pop(kw, None)
 
 
-def json_schema_extra(schema: dict[str, Any], model: type["PydanticBaseModel"]) -> None:
+def json_schema_extra(schema: dict[str, Any], model: type["PydanticBaseModel"]) -> None:  # noqa: ARG001
     """Provide extra JSON schema properties."""
     # Add metaschema and id.
     add_metaschema(schema)
-    add_schema_id(schema, model)
+    # Seems that schema and model is not needed.
+    # add_schema_id(schema, model)  # noqa: ERA001
     # Remove "title" & "default" from properties.
     remove_keywords_from_properties(schema, ["title", "default"])
 

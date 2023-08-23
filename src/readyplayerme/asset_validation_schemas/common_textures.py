@@ -112,7 +112,7 @@ class CommonTextureProperties(PydanticBaseModel):
     name: str
     uri: str
     instances: int = Field(ge=1, json_schema_extra={"errorMessage": {"minimum": INSTANCE_ERROR_MSG}})
-    mime_type: Literal["image/png", "image/jpeg"] = Field(
+    mimeType: Literal["image/png", "image/jpeg"] = Field(  # noqa: N815
         json_schema_extra={"errorMessage": MIMETYPE_ERROR_MSG.format(value="${0}")}
     )
     compression: str
@@ -129,7 +129,7 @@ class CommonTextureProperties(PydanticBaseModel):
         le=MAX_FILE_SIZE * 1024**2,
         json_schema_extra={"errorMessage": {"maximum": FILE_SIZE_ERROR_MSG.format(valid_value=MAX_FILE_SIZE)}},
     )  # Convert to bytes.
-    gpu_size: int = Field(
+    gpuSize: int = Field(  # noqa: N815
         le=MAX_GPU_SIZE * 1024**2,
         json_schema_extra={"errorMessage": {"maximum": GPU_SIZE_ERROR_MSG.format(valid_value=MAX_GPU_SIZE)}},
     )
@@ -241,23 +241,19 @@ if __name__ == "__main__":
 
     # Example of validation in Python
     try:
-        TexturePropertiesNormalOcclusion(
-            name="normalmap",
-            uri="path/to/normal.png",
-            instances=1,
-            mime_type="image/png",
-            compression="default",
-            resolution="1024x1024",
-            size=197152,
-            gpu_size=1291456,
-            slots=[
-                "baseColor",
-                "test",
-                "asd",
-                "gasad",
-                "normalTexture",
-                "normalTexture",
-                "normalTexture",
+        TextureSchemaStandard(
+            properties=[
+                {
+                    "name": "Wolf3D-fullbody-f-N-1024",
+                    "uri": "",
+                    "slots": ["normalTexture"],
+                    "instances": 1,
+                    "mimeType": "image/jpeg",
+                    "compression": "",
+                    "resolution": "1024x1024",
+                    "size": 450233,
+                    "gpuSize": 5592404,
+                },
             ],
         )
     except ValidationError as error:

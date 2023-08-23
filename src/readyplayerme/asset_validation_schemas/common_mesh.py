@@ -2,17 +2,10 @@
 from enum import Enum
 from typing import Any, Literal
 
-from pydantic import (
-    Field,
-    FieldValidationInfo,
-    ValidationError,
-    ValidatorFunctionWrapHandler,
-    field_validator,
-)
-from pydantic.dataclasses import dataclass
+from pydantic import Field, FieldValidationInfo, ValidationError, ValidatorFunctionWrapHandler, field_validator
 from pydantic_core import PydanticCustomError
 
-from readyplayerme.asset_validation_schemas.basemodel import get_model_config
+from readyplayerme.asset_validation_schemas.basemodel import PydanticBaseModel
 
 
 class IntegerType(str, Enum):
@@ -76,10 +69,11 @@ def custom_error_validator(value: Any, handler: ValidatorFunctionWrapHandler, in
             raise  # We didn't cover this error, so raise default.
 
 
-@dataclass(config=get_model_config(title="Common Mesh Properties"))
-class CommonMesh:
+# @dataclass(config=get_model_config(title="Common Mesh Properties"))
+class CommonMesh(PydanticBaseModel):
     """Validation schema for common properties of meshes."""
 
+    name: object
     mode: tuple[Literal[RenderingMode.TRIANGLES]] = Field(
         ...,
         description=f"The rendering mode of the mesh. Only {RenderingMode.TRIANGLES.value} are supported.",
@@ -93,13 +87,14 @@ class CommonMesh:
         description="Number of geometry primitives to be rendered with the given material.",
         json_schema_extra={"errorMessage": primitives_error},
     )
-
+    glPrimitives: object  # noqa: N815
+    vertices: object
     indices: tuple[Literal[IntegerType.u16]] = Field(
         ...,
         description="The index of the accessor that contains the vertex indices.",
         json_schema_extra={"errorMessage": indices_error},
     )
-
+    attributes: object
     instances: Literal[1] = Field(
         ...,
         description="Number of instances to render.",
@@ -137,8 +132,6 @@ if __name__ == "__main__":
     # Example of validation in Python.
     try:
         # Multiple checks at once. Test non-existent field as well.
-        model = CommonMesh(
-            mode=("LINES",), primitives=3, indices=("u8",), instances=2, size=int(1e7), extra_prop="no!"  # type: ignore
-        )
+        model = CommonMesh(mode=("LINES",), primitives=3, indices=("u8",), instances=2, size=int(1e7), extra_prop="no!")
     except ValidationError as error:
         logging.debug("\nValidation Errors:\n %s", error)
