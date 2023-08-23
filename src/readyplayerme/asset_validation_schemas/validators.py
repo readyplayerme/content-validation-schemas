@@ -53,3 +53,25 @@ class CustomValidator:
                 if error_type and error_msg:
                     raise PydanticCustomError(error_type, error_msg) from error
                 raise  # We didn't cover this error, so raise the original error.
+
+
+def get_length_error_msg(error_details: ErrorDetails, length_type: str, error_msg_template: str) -> str:
+    """Generate an error message related to the length type of an input value.
+
+    :param error_details: Error details from Pydantic's ValidationError.
+    :param length_type: Type of length error, e.g. "min_length" or "max_length".
+    :param error_msg_template: Template for the error message. Must have "{valid_value}" and "{value}" placeholders.
+    :return: Error message.
+    """
+    error_ctx = error_details.get("ctx", {})
+    expected = error_ctx.get(length_type, f"<ERROR: '{length_type}' not in error ctx>")
+    input_value = error_details.get("input")
+    try:
+        # Getting length of the input is more accurate than "actual_length" in error context.
+        actual_length = str(len(input_value))  # type: ignore[arg-type]
+    except TypeError:
+        actual_length = str(error_ctx.get("actual_length", "<ERROR: 'actual_length' not in error ctx>"))
+    try:
+        return error_msg_template.format(valid_value=expected, value=actual_length)
+    except KeyError:
+        return error_msg_template
