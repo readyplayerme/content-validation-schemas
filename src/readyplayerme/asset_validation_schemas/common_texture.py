@@ -1,16 +1,15 @@
 """Validation models for properties of image textures."""
 from collections.abc import Iterable
-from enum import Enum
 from typing import Annotated, Any, Literal, cast
 
 from pydantic import ConfigDict, Field, ValidationError, field_validator
 from pydantic.alias_generators import to_snake
 from pydantic_core import ErrorDetails
 
-from readyplayerme.asset_validation_schemas.basemodel import PydanticBaseModel, get_model_config
+from readyplayerme.asset_validation_schemas.basemodel import BaseModel
 from readyplayerme.asset_validation_schemas.schema_io import properties_comment
-from readyplayerme.asset_validation_schemas.types import create_enum_class, get_enum_length
-from readyplayerme.asset_validation_schemas.validators import CustomValidator, ErrorMsgReturnType
+from readyplayerme.asset_validation_schemas.types import StrEnum, create_enum_class, get_enum_length
+from readyplayerme.asset_validation_schemas.validators import CustomValidator, ErrorMsgReturnType, get_length_error_msg
 
 MAX_FILE_SIZE = 2  # in MB
 MAX_GPU_SIZE = 6  # in MB
@@ -32,7 +31,7 @@ MIN_SLOTS_ERROR_MSG = (
 )
 MAX_SLOTS_ERROR_MSG = "Texture map used for too many slots ({value}). Allowed: {valid_value}."
 
-Resolution: Enum = create_enum_class(
+Resolution: StrEnum = create_enum_class(
     "resolution",
     {
         f"_{res}": res
@@ -53,9 +52,9 @@ texture_slots = {
     for tex in ["normalTexture", "baseColorTexture", "emissiveTexture", "metallicRoughnessTexture", "occlusionTexture"]
 }
 
-TextureSlotStandard: Enum = create_enum_class("textureSlotStandard", texture_slots)
-TextureSlotNormalOcclusion: Enum = create_enum_class(
-    "textureSlotNormalOcclusion", texture_slots, {"normal_texture", "occlusion_texture"}
+TextureSlotStandard: StrEnum = create_enum_class("TextureSlotStandard", texture_slots)
+TextureSlotNormalOcclusion: StrEnum = create_enum_class(
+    "TextureSlotNormalOcclusion", texture_slots, {"normal_texture", "occlusion_texture"}
 )
 
 
@@ -65,13 +64,13 @@ def error_msg_func_common(field_name: str, error_details: ErrorDetails) -> Error
         case "instances":
             return TEXTURE_ERROR, INSTANCE_ERROR_MSG
         case "mime_type":
-            return TEXTURE_ERROR, MIMETYPE_ERROR_MSG.format(value=error_details.get("value"))
+            return TEXTURE_ERROR, MIMETYPE_ERROR_MSG.format(value=error_details.get("input"))
         case "resolution":
             return (
                 TEXTURE_ERROR,
                 RESOLUTION_ERROR_MSG.format(
-                    valid_value=next(reversed(Resolution)).value,  # type: ignore[call-overload] # Enum is reversible.
-                    value=error_details.get("value"),
+                    valid_value=next(reversed(Resolution)).value,
+                    value=error_details.get("input"),
                 ),
             )
         case "size":
@@ -85,29 +84,29 @@ def error_msg_func_common(field_name: str, error_details: ErrorDetails) -> Error
 def error_msg_func_slots(field_name: str, error_details: ErrorDetails) -> ErrorMsgReturnType:  # noqa: ARG001
     """Return a custom error type and message for the texture model."""
     match error_details:
+        # In case strict mode is on, the error type is "is_instance_of" instead of "enum".
+        case {"type": "is_instance_of"}:
+            # Identify the enum class.
+            try:
+                cls = globals()[error_details.get("ctx", {}).get("class")]  # type: ignore[index]
+            except KeyError:
+                return None, None
+            expected = ", ".join(cast(Iterable[str], cls))
+            return TEXTURE_ERROR, SLOTS_ERROR_MSG.format(valid_value=expected, value=error_details.get("input"))
         case {"type": "enum"}:
-            expected = error_details.get("ctx", {}).get("expected")
+            expected = error_details.get("ctx", {}).get("expected", f"<ERROR: '{expected}' not in error ctx>")
             return TEXTURE_ERROR, SLOTS_ERROR_MSG.format(valid_value=expected, value=error_details.get("input"))
         case {"type": "too_long"}:
-            return generate_length_error_msg(error_details, "max_length", MAX_SLOTS_ERROR_MSG)
+            return TEXTURE_ERROR, get_length_error_msg(error_details, "max_length", MAX_SLOTS_ERROR_MSG)
         case {"type": "too_short"}:
-            return generate_length_error_msg(error_details, "min_length", MIN_SLOTS_ERROR_MSG)
+            return TEXTURE_ERROR, get_length_error_msg(error_details, "min_length", MIN_SLOTS_ERROR_MSG)
     return None, None
 
 
-def generate_length_error_msg(error_details, length_type, error_msg_template):
-    """Generate an error message related to the length of an input value."""
-    expected = error_details.get("ctx", {}).get(length_type)
-    input_value = error_details.get("input")
-    if input_value is not None:
-        actual_length = len(input_value)
-    return TEXTURE_ERROR, error_msg_template.format(valid_value=expected, value=actual_length)
-
-
-class CommonTextureProperties(PydanticBaseModel):
+class CommonTextureProperties(BaseModel):
     """Validation schema for common properties of texture maps."""
 
-    model_config = ConfigDict(title="Common Texture Map Properties", use_enum_values=True)
+    model_config = ConfigDict(title="Common Texture Map Properties")
 
     name: str
     uri: str
@@ -116,7 +115,7 @@ class CommonTextureProperties(PydanticBaseModel):
         json_schema_extra={"errorMessage": MIMETYPE_ERROR_MSG.format(value="${0}")}
     )
     compression: str
-    resolution: Annotated[  # type: ignore[valid-type] # Resolution is an Enum, not a regular variable.
+    resolution: Annotated[
         Resolution,
         Field(
             description="Image resolution data used for textures. Power of 2 and square.",
@@ -138,7 +137,7 @@ class CommonTextureProperties(PydanticBaseModel):
     )
 
 
-def get_slot_field(slots: Enum) -> Any:
+def get_slot_field(slots: StrEnum) -> Any:
     """Annotate the slots enumeration itself, which is a single item in the slots array, by a custom error message."""
     valid = ", ".join(cast(Iterable[str], slots))  # Use cast to make type checker happy.
     return Annotated[
@@ -165,16 +164,14 @@ class TexturePropertiesStandard(CommonTextureProperties):
             }
         },
     )
-    validation_wrapper = field_validator("*", mode="wrap")(CustomValidator(error_msg_func_slots).custom_error_validator)
+    validation_wrapper_slots = field_validator("slots", mode="wrap")(
+        CustomValidator(error_msg_func_slots).custom_error_validator
+    )
 
 
-class TextureSchemaStandard(PydanticBaseModel):
+class TextureSchemaStandard(BaseModel):
     """Texture schema for a single- or multi-mesh asset with standard PBR map support."""
 
-    model_config = get_model_config(
-        json_schema_extra={},
-        defer_build=True,
-    )
     properties: list[TexturePropertiesStandard] = Field(
         min_length=1,
         json_schema_extra={
@@ -202,10 +199,12 @@ class TexturePropertiesNormalOcclusion(CommonTextureProperties):
             }
         },
     )
-    validation_wrapper = field_validator("*", mode="wrap")(CustomValidator(error_msg_func_slots).custom_error_validator)
+    validation_wrapper_slots = field_validator("slots", mode="wrap")(
+        CustomValidator(error_msg_func_slots).custom_error_validator
+    )
 
 
-class TextureSchemaNormalOcclusion(PydanticBaseModel):
+class TextureSchemaNormalOcclusion(BaseModel):
     """Texture schema for a single-mesh asset with only normal and occlusion map support."""
 
     properties: list[TexturePropertiesNormalOcclusion] = Field(
@@ -225,17 +224,24 @@ class TextureSchemaNormalOcclusion(PydanticBaseModel):
 
 if __name__ == "__main__":
     import logging
+    from pathlib import Path
 
-    from pydantic.json_schema import models_json_schema
+    from pydantic.alias_generators import to_camel
 
-    from readyplayerme.asset_validation_schemas.basemodel import SchemaNoTitleAndDefault
-    from readyplayerme.asset_validation_schemas.schema_io import write_json
+    from readyplayerme.asset_validation_schemas.schema_io import (
+        GenerateJsonSchemaWithoutKeys,
+        models_definitions_json_schema,
+        write_json,
+    )
 
     logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
     # Convert model to JSON schema.
-    _, schema = models_json_schema(
-        [(TextureSchemaNormalOcclusion, "validation"), (TextureSchemaStandard, "validation")],
-        schema_generator=SchemaNoTitleAndDefault,
+    schema = models_definitions_json_schema(
+        [TextureSchemaStandard, TextureSchemaNormalOcclusion],
+        schema_generator=GenerateJsonSchemaWithoutKeys.with_keys(["title", "default", "$id", "$schema"]),
+        id_=f"{to_camel(Path(__file__).stem)}.schema.json",
+        title="Common Texture Map Properties",
+        description="Validation schema for common properties of texture maps.",
     )
     write_json(schema)
 
@@ -251,13 +257,8 @@ if __name__ == "__main__":
             size=197152,
             gpu_size=1291456,
             slots=[
-                "baseColor",
+                "baseColorTexture",
                 "test",
-                "asd",
-                "gasad",
-                "normalTexture",
-                "normalTexture",
-                "normalTexture",
             ],
         )
     except ValidationError as error:
