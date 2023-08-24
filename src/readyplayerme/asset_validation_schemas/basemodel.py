@@ -5,34 +5,8 @@ from typing import Any
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import ConfigDict
 from pydantic.alias_generators import to_camel
-from pydantic.json_schema import GenerateJsonSchema, JsonSchemaMode, JsonSchemaValue
-from pydantic_core import CoreSchema
 
-
-def add_metaschema(schema: dict[str, Any]) -> None:
-    """Add the JSON schema metaschema to a schema."""
-    schema["$schema"] = GenerateJsonSchema.schema_dialect
-
-
-def add_schema_id(schema: dict[str, Any], model: type["PydanticBaseModel"]) -> None:
-    """Add the JSON schema id based on the model name to a schema."""
-    schema["$id"] = f"{(name := model.__name__)[0].lower() + name[1:]}.schema.json"
-
-
-def remove_keywords_from_properties(schema: dict[str, Any], keywords: list[str]) -> None:
-    """Remove given keywords from properties of a schema."""
-    for prop in schema.get("properties", {}).values():
-        for kw in keywords:
-            prop.pop(kw, None)
-
-
-def json_schema_extra(schema: dict[str, Any], model: type["PydanticBaseModel"]) -> None:
-    """Provide extra JSON schema properties."""
-    # Add metaschema and id.
-    add_metaschema(schema)
-    add_schema_id(schema, model)
-    # Remove "title" & "default" from properties.
-    remove_keywords_from_properties(schema, ["title", "default"])
+from readyplayerme.asset_validation_schemas.schema_io import json_schema_extra
 
 
 def get_model_config(**kwargs: Any) -> ConfigDict:
@@ -61,16 +35,6 @@ class BaseModel(PydanticBaseModel, abc.ABC):
     """Global base class for all models."""
 
     model_config = get_model_config(title="Base Model", defer_build=True)
-
-
-class SchemaNoTitleAndDefault(GenerateJsonSchema):
-    """Generator for a JSON schema without titles and default values."""
-
-    def generate(self, schema: CoreSchema, mode: JsonSchemaMode = "validation") -> JsonSchemaValue:
-        _schema = super().generate(schema, mode)
-        remove_keywords_from_properties(_schema, ["title", "default"])
-        _schema.pop("title", None)
-        return _schema
 
 
 if __name__ == "__main__":
