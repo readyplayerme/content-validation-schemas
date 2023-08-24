@@ -28,7 +28,7 @@ def get_model_config(**kwargs: Any) -> ConfigDict:
         "frozen": True,
     }
     updated_dict = default_dict | kwargs
-    return ConfigDict(**updated_dict)  # type: ignore[misc]
+    return ConfigDict(**updated_dict)  # type: ignore[typeddict-item]
 
 
 class BaseModel(PydanticBaseModel, abc.ABC):
