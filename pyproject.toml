@@ -57,7 +57,7 @@ path = ".venv"
 dependencies = [
   "black>=23.3.0",
   "mypy>=1.5.1",
-  "ruff>=0.0.275",
+  "ruff>=0.0.285",
   "coverage[toml]>=6.5",
   "pytest",
 ]
