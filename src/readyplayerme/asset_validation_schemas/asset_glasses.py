@@ -14,7 +14,7 @@ from pydantic import ConfigDict, ValidationError
 from readyplayerme.asset_validation_schemas import common_mesh
 from readyplayerme.asset_validation_schemas.animation import NoAnimation
 from readyplayerme.asset_validation_schemas.basemodel import BaseModel
-from readyplayerme.asset_validation_schemas.common_textures import TextureSchemaStandard
+from readyplayerme.asset_validation_schemas.common_texture import TextureSchemaStandard
 
 
 class Mesh(BaseModel):
