@@ -17,7 +17,7 @@ def get_model_config(**kwargs: Any) -> ConfigDict:
     default_dict = {
         "validate_assignment": True,
         "validate_default": False,
-        "strict": True,
+        "strict": False,  # Otherwise, enum values don't pass validation as strings.
         "populate_by_name": True,
         "use_enum_values": True,
         "extra": "forbid",
