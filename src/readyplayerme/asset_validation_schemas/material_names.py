@@ -1,21 +1,20 @@
 """Model for allowed names of materials for different asset types."""
 from collections.abc import Iterable
-from enum import Enum
-from typing import Annotated, Any, Literal, cast
+from typing import Annotated, cast
 
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import (
     Field,
-    FieldValidationInfo,
     ValidationError,
-    ValidatorFunctionWrapHandler,
     create_model,
     field_validator,
 )
-from pydantic_core import PydanticCustomError
+from pydantic_core import ErrorDetails, PydanticCustomError
 
 from readyplayerme.asset_validation_schemas.basemodel import get_model_config
+from readyplayerme.asset_validation_schemas.fields import get_enum_field_definitions
 from readyplayerme.asset_validation_schemas.types import create_enum_class
+from readyplayerme.asset_validation_schemas.validators import CustomValidator, ErrorMsgReturnType
 
 material_names = {
     "beard": "Wolf3D_Beard",
@@ -50,16 +49,19 @@ ERROR_MSG_MULTI = "Material name should be one of {valid_values}. Found {value} 
 DOCS_URL = "https://docs.readyplayer.me/asset-creation-guide/validation/validation-checks/"
 
 
-def get_error_type_msg(field_name: str, value: Any) -> tuple[str, str] | tuple[None, None]:
+def get_error_type_msg(field_name: str, error: ErrorDetails) -> ErrorMsgReturnType:
     """Convert the error to a custom error type and message.
 
     If the error type is not covered, return a None-tuple.
     """
+    error_ctx = error.get("ctx", {})
+    expected = error_ctx.get("expected")
+    value = error.get("input")
     match field_name:
         case key if key in AllMaterialNames.__members__:
             return (
                 ERROR_CODE,
-                ERROR_MSG.format(valid_value=getattr(AllMaterialNames, key).value, value=value)
+                ERROR_MSG.format(valid_value=expected, value=value)
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
         case "outfit":
@@ -68,7 +70,7 @@ def get_error_type_msg(field_name: str, value: Any) -> tuple[str, str] | tuple[N
                 ERROR_MSG_MULTI.format(valid_values=", ".join(cast(Iterable[str], OutfitMaterialNames)), value=value)
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
-        case key if key in ("non_customizable_avatar", "nonCustomizableAvatar"):
+        case key if key in ("hero_avatar", "heroAvatar"):
             return (
                 ERROR_CODE,
                 ERROR_MSG_MULTI.format(
@@ -77,41 +79,6 @@ def get_error_type_msg(field_name: str, value: Any) -> tuple[str, str] | tuple[N
                 + f"\n\tFor further information visit {DOCS_URL}.".expandtabs(4) * bool(DOCS_URL),
             )
     return None, None
-
-
-def custom_error_validator(value: Any, handler: ValidatorFunctionWrapHandler, info: FieldValidationInfo) -> Any:
-    """Wrap the field validation function to raise custom error types.
-
-    Return the validated value if no error occurred.
-    """
-    try:
-        return handler(value)
-    except ValidationError as error:
-        for err in error.errors():
-            error_type, error_msg = get_error_type_msg(info.field_name, err["input"])
-            if error_type and error_msg:
-                raise PydanticCustomError(error_type, error_msg) from error
-            raise  # We didn't cover this error, so raise default.
-
-
-def get_const_str_field_type(const: str) -> Any:
-    """Return a constant-string field type with custom error messages."""
-    return Annotated[
-        # While this is not really a Literal, since we illegally use a variable, it works as "const" in json schema.
-        Literal[const],
-        Field(json_schema_extra={"errorMessage": ERROR_MSG.format(valid_value=const, value="${0}")}),
-    ]
-
-
-def get_field_definitions(field_input: Enum) -> Any:
-    """Turn a StrEnum into field types of string-constants."""
-    return {
-        member.name: (  # Tuple of (type definition, default value).
-            get_const_str_field_type(member.value),
-            None,  # Default value.
-        )
-        for member in field_input  # type: ignore[attr-defined]
-    }
 
 
 # Define fields for outfit assets and hero avatar assets.
@@ -137,14 +104,15 @@ hero_avatar_field = Annotated[
     ),
 ]
 
-# Wrap all field validators in a custom error validator.
-wrapped_validator = field_validator("*", mode="wrap")(custom_error_validator)
+# Wrapped validator to use for custom error messages.
+wrapped_validator = field_validator("*", mode="wrap")(CustomValidator(get_error_type_msg).custom_error_validator)
 
+# We don't really have the need for a model, since we can use the defined fields directly in other schemas.
 MaterialNamesModel: type[PydanticBaseModel] = create_model(
     "MaterialNames",
     __config__=get_model_config(title="Material Names"),
-    __validators__={"*": wrapped_validator},  # type: ignore[dict-item]
-    **get_field_definitions(AllMaterialNames),
+    __validators__={"*": wrapped_validator},
+    **get_enum_field_definitions(AllMaterialNames, ERROR_MSG),
     outfit=(outfit_field, None),
     non_customizable_avatar=(hero_avatar_field, None),
 )
