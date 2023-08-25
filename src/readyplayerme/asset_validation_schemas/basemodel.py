@@ -6,7 +6,7 @@ from pydantic import BaseModel as PydanticBaseModel
 from pydantic import ConfigDict
 from pydantic.alias_generators import to_camel
 
-from readyplayerme.asset_validation_schemas.schema_io import json_schema_extra
+from readyplayerme.asset_validation_schemas.schema_io import remove_keys_from_schema
 
 
 def get_model_config(**kwargs: Any) -> ConfigDict:
@@ -24,7 +24,7 @@ def get_model_config(**kwargs: Any) -> ConfigDict:
         "hide_input_in_errors": True,
         "alias_generator": to_camel,
         "str_strip_whitespace": False,
-        "json_schema_extra": json_schema_extra,
+        "json_schema_extra": lambda schema: remove_keys_from_schema(schema, ["title", "default"]),
         "frozen": True,
     }
     updated_dict = default_dict | kwargs

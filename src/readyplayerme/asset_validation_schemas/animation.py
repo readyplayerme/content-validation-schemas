@@ -1,14 +1,11 @@
 """Sub-schemas for animation validation."""
-from pathlib import Path
-from typing import Any
 
 from pydantic import Field, ValidationError, field_validator
-from pydantic.alias_generators import to_camel
 from pydantic.dataclasses import dataclass
 from pydantic_core import ErrorDetails
 
 from readyplayerme.asset_validation_schemas.basemodel import get_model_config
-from readyplayerme.asset_validation_schemas.schema_io import add_metaschema, properties_comment, remove_keys_from_schema
+from readyplayerme.asset_validation_schemas.schema_io import properties_comment
 from readyplayerme.asset_validation_schemas.validators import CustomValidator, ErrorMsgReturnType
 
 ANIMATION_ERROR = "AnimationError"
@@ -20,15 +17,7 @@ def error_msg_func(field_name: str, error_details: ErrorDetails) -> ErrorMsgRetu
     return ANIMATION_ERROR, ANIMATION_ERROR_MSG
 
 
-def json_schema_extra(schema: dict[str, Any]) -> None:
-    """Provide extra JSON schema properties."""
-    # Add metaschema and id.
-    add_metaschema(schema)
-    schema["$id"] = f"{to_camel(Path(__file__).stem)}.schema.json"
-    remove_keys_from_schema(schema, ["title", "default"])
-
-
-@dataclass(config=get_model_config(title="Animation", json_schema_extra=json_schema_extra))
+@dataclass(config=get_model_config(title="Animation"))
 class NoAnimation:
     """Empty animation data."""
 

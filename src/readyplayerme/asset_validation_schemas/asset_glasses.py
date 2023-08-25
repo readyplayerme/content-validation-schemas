@@ -9,12 +9,14 @@ Co-authored-by: Olaf Haag <Olaf-Wolf3D@users.noreply.github.com>
 Co-authored-by: Ivan Sanandres Gutierrez <IvanRPM@users.noreply.github.com>
 """
 
-from pydantic import ConfigDict, ValidationError
+from pydantic import ValidationError
 
 from readyplayerme.asset_validation_schemas import common_mesh
 from readyplayerme.asset_validation_schemas.animation import NoAnimation
-from readyplayerme.asset_validation_schemas.basemodel import BaseModel
+from readyplayerme.asset_validation_schemas.basemodel import BaseModel, get_model_config
 from readyplayerme.asset_validation_schemas.common_texture import TextureSchemaStandard
+from readyplayerme.asset_validation_schemas.scenes import SceneProperties
+from readyplayerme.asset_validation_schemas.schema_io import json_schema_extra
 
 
 class Mesh(BaseModel):
@@ -25,16 +27,23 @@ class Mesh(BaseModel):
     total_triangle_count: int
 
 
+class Scenes(BaseModel):
+    """inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword."""
+
+    properties: list[SceneProperties]
+    has_default_scene: bool
+
+
 class AssetGlasses(BaseModel):
     """Validation schema for asset of type Glasses."""
 
-    model_config = ConfigDict(title="Glasses Asset")
+    model_config = get_model_config(title="Glasses Asset", json_schema_extra=json_schema_extra)
 
     asset_type: str
     transforms: object
     joints: object
     gltf_errors: object
-    scenes: object
+    scenes: Scenes
     meshes: Mesh
     materials: object
     animations: NoAnimation
