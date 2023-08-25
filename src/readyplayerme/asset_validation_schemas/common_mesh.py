@@ -80,6 +80,10 @@ def custom_error_validator(value: Any, handler: ValidatorFunctionWrapHandler, in
 class CommonMesh:
     """Validation schema for common properties of meshes."""
 
+    name: str
+    gl_primitives: int
+    attributes: object
+    vertices: int
     mode: tuple[Literal[RenderingMode.TRIANGLES]] = Field(
         ...,
         description=f"The rendering mode of the mesh. Only {RenderingMode.TRIANGLES.value} are supported.",

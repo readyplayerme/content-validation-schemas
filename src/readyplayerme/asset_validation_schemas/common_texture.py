@@ -94,7 +94,7 @@ def error_msg_func_slots(field_name: str, error_details: ErrorDetails) -> ErrorM
             expected = ", ".join(cast(Iterable[str], cls))
             return TEXTURE_ERROR, SLOTS_ERROR_MSG.format(valid_value=expected, value=error_details.get("input"))
         case {"type": "enum"}:
-            expected = error_details.get("ctx", {}).get("expected", f"<ERROR: '{expected}' not in error ctx>")
+            expected = error_details.get("ctx", {}).get("expected", "<ERROR: 'expected' not in error ctx>")
             return TEXTURE_ERROR, SLOTS_ERROR_MSG.format(valid_value=expected, value=error_details.get("input"))
         case {"type": "too_long"}:
             return TEXTURE_ERROR, get_length_error_msg(error_details, "max_length", MAX_SLOTS_ERROR_MSG)
