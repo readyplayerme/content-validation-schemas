@@ -82,11 +82,15 @@ Unfortunately, there are no pre-built binaries for hatch, and hatch on its own c
 
 3. Activate the hatch environment.
 
-    ```mamba activate hatch```
+    ```powershell
+    mamba activate hatch
+    ```
 
     OR if you're using Powershell (see [issue](https://github.com/mamba-org/mamba/issues/1717)):
 
-    ```conda activate hatch```
+    ```powershell
+    conda activate hatch
+    ```
 
 4. Prepare the environment for development.
     Once you setup hatch, navigate to the cloned repository, and execute:
@@ -101,11 +105,15 @@ Unfortunately, there are no pre-built binaries for hatch, and hatch on its own c
 
     Alternatively, you can get the new environment path and add it to your IDE as a Python interpreter for this repository with:
 
-    ```hatch run python -c "import sys;print(sys.executable)"```
+    ```powershell
+    hatch run python -c "import sys;print(sys.executable)"
+    ```
 
     If you decided against using hatch, we still recommend installing the pre-commit hooks.
 
-    ```pre-commit install -t pre-commit -t commit-msg -t pre-push```
+    ```powershell
+    pre-commit install -t pre-commit -t commit-msg -t pre-push
+    ```
 
 ### Branch Off & Make Your Changes
 
