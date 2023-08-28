@@ -105,7 +105,7 @@ Unfortunately, there are no pre-built binaries for hatch, and hatch on its own c
 
     If you decided against using hatch, we still recommend installing the pre-commit hooks.
 
-    ```pre-commit install```
+    ```pre-commit install -t pre-commit -t commit-msg -t pre-push```
 
 ### Branch Off & Make Your Changes
 
