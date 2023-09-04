@@ -199,7 +199,6 @@
     "type": "Validation data should be a JSON object.",
     "required": {
       "transforms": "Validation data should have a 'transforms' property."
-    },
-    "_": "Asset failed validation against its asset type ${0/assetType}."
+    }
   }
 }
