@@ -51,6 +51,17 @@
         }
       }
     },
+    "gltfExtensions": {
+      "description": "The glTF extensions used in the asset.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 0,
+      "errorMessage": {
+        "maxItems": "The gltf asset must not have extensions. Found: ${0}."
+      }
+    },
     "gltfErrors": {
       "description": "The errors encountered during glTF validation.",
       "type": "array",
