@@ -15,7 +15,7 @@
     "modularBottom": { "type": "string", "const": "Wolf3D_Outfit_Bottom", "errorMessage": "Material name should be 'Wolf3D_Outfit_Bottom'. Found ${0} instead." },
     "modularFootwear": { "type": "string", "const": "Wolf3D_Outfit_Footwear", "errorMessage": "Material name should be 'Wolf3D_Outfit_Footwear'. Found ${0} instead." },
     "modularTop": { "type": "string", "const": "Wolf3D_Outfit_Top", "errorMessage": "Material name should be 'Wolf3D_Outfit_Top'. Found ${0} instead." },
-    "heroAvatar": {
+    "costume": {
       "enum": [
         "Wolf3D_Body",
         "Wolf3D_Eye",

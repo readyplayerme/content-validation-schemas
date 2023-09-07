@@ -55,7 +55,7 @@
       "const": "Wolf3D_Outfit_Top",
       "errorMessage": "Mesh name should be 'Wolf3D_Outfit_Top'. Found ${0} instead."
     },
-    "heroAvatar": {
+    "costume": {
       "type": "string",
       "enum": [
         "EyeLeft",

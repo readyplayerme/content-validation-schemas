@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "assetHeroAvatar.schema.json",
-  "title": "Hero Avatar Asset",
-  "description": "A Ready Player Me glTF binary validation schema for a hero avatar.",
+  "$id": "assetCostume.schema.json",
+  "title": "Costume Avatar Asset",
+  "description": "A Ready Player Me glTF binary validation schema for a costume avatar.",
   "type": "object",
   "properties": {
-    "scenes": { "$ref": "scene.schema.json#/$defs/fullbodyOutfitScene" },
+    "scenes": { "$ref": "scene.schemsa.json#/$defs/fullbodyOutfitScene" },
     "meshes": {
       "type": "object",
       "properties": {
@@ -14,8 +14,8 @@
           "minimum": 1,
           "maximum": 30000,
           "errorMessage": {
-            "minimum": "Too few triangles! Hero avatars must have at least 1 triangle.",
-            "maximum": "Too many triangles (${0})! Hero avatars must have no more than a total of 30,000 triangles."
+            "minimum": "Too few triangles! Costume avatars must have at least 1 triangle.",
+            "maximum": "Too many triangles (${0})! Costume avatars must have no more than a total of 30,000 triangles."
           }
         },
         "properties": {
@@ -26,7 +26,7 @@
             "properties": {
               "name": {
                 "description": "Name of the mesh.",
-                "$ref": "meshNames.schema.json#/properties/heroAvatar"
+                "$ref": "meshNames.schema.json#/properties/costume"
               },
               "attributes": {
                 "$ref": "meshAttributes.schema.json#/properties/skinned"
@@ -222,8 +222,8 @@
           "minItems": 1,
           "maxItems": 13,
           "errorMessage": {
-            "minItems": "Missing mesh! Hero avatars must have at least 1 mesh.",
-            "maxItems": "Too many meshes! Hero avatars must have no more than 13 meshes."
+            "minItems": "Missing mesh! Costume avatars must have at least 1 mesh.",
+            "maxItems": "Too many meshes! Costume avatars must have no more than 13 meshes."
           }
         }
       }
@@ -239,7 +239,7 @@
             "properties": {
               "name": {
                 "description": "Name of the material.",
-                "$ref": "materialNames.schema.json#/properties/heroAvatar"
+                "$ref": "materialNames.schema.json#/properties/costume"
               },
               "textures": {
                 "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
