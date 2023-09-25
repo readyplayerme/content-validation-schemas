@@ -5,7 +5,7 @@
   "description": "A Ready Player Me glTF binary validation schema for a costume avatar.",
   "type": "object",
   "properties": {
-    "scenes": { "$ref": "scene.schemsa.json#/$defs/fullbodyOutfitScene" },
+    "scenes": { "$ref": "scene.schema.json#/$defs/fullbodyOutfitScene" },
     "meshes": {
       "type": "object",
       "properties": {
