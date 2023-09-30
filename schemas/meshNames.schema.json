@@ -60,8 +60,8 @@
       "enum": [
         "EyeLeft",
         "EyeRight",
-        "Wolf3D_Body_Custom",
-        "Wolf3D_Head_Custom",
+        "Wolf3D_Body",
+        "Wolf3D_Head",
         "Wolf3D_Outfit_Bottom",
         "Wolf3D_Outfit_Footwear",
         "Wolf3D_Outfit_Top",
@@ -70,9 +70,12 @@
         "Wolf3D_Facewear",
         "Wolf3D_Glasses",
         "Wolf3D_Hair",
-        "Wolf3D_Headwear"
+        "Wolf3D_Headwear",
+        "Wolf3D_Body_Custom",
+        "Wolf3D_Head_Custom"
       ],
-      "errorMessage": "Mesh name should be one of 'EyeLeft', 'EyeRight', 'Wolf3D_Body_Custom', 'Wolf3D_Head_Custom', 'Wolf3D_Outfit_Bottom', 'Wolf3D_Outfit_Footwear', 'Wolf3D_Outfit_Top', 'Wolf3D_Teeth', 'Wolf3D_Beard', 'Wolf3D_Facewear', 'Wolf3D_Glasses', 'Wolf3D_Hair', 'Wolf3D_Headwear'. Found ${0} instead."
+      "$comment": "Wolf3D_Body_Custom and Wolf3D_Head_Custom are deprecated, but allowed for backwards compatibility.",
+      "errorMessage": "Mesh name should be one of 'EyeLeft', 'EyeRight', 'Wolf3D_Body', 'Wolf3D_Head', 'Wolf3D_Outfit_Bottom', 'Wolf3D_Outfit_Footwear', 'Wolf3D_Outfit_Top', 'Wolf3D_Teeth', 'Wolf3D_Beard', 'Wolf3D_Facewear', 'Wolf3D_Glasses', 'Wolf3D_Hair', 'Wolf3D_Headwear'. Found ${0} instead."
     },
     "outfit": {
       "type": "string",
