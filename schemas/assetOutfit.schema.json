@@ -185,7 +185,23 @@
     },
     "textures": { "$ref": "commonTexture.schema.json#/$defs/fullPBR" },
     "animations": { "$ref": "animation.schema.json#/properties/noAnimation" },
-    "joints" : {"allOf": [{ "$ref": "joints.schema.json#/$defs/skeletonV2" }, { "$ref": "joints.schema.json#/$defs/skeletonV2/$defs/maxJoints" }]}
+    "joints": {
+      "anyOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "joints.schema.json#/$defs/skeletonV2"
+            },
+            {
+              "$ref": "joints.schema.json#/$defs/skeletonV2/$defs/maxJoints"
+            }
+          ]
+        },
+        {
+          "$ref": "joints.schema.json#/$defs/skeletonV2WithEyes"
+        }
+      ]
+    }
   },
   "required": ["scenes", "meshes", "materials", "joints"],
   "$defs": {
