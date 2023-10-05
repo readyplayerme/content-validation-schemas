@@ -201,7 +201,8 @@
           "$ref": "joints.schema.json#/$defs/skeletonV2WithEyes"
         }
       ]
-    },
+    }
+  },
   "required": ["scenes", "meshes", "materials", "joints"],
   "$defs": {
     "outfitTextureCount": {
