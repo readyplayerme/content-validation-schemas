@@ -38,7 +38,7 @@
               {
                 "if": {
                   "properties": {
-                    "name": { "const": "Wolf3D_Body_Custom" }
+                    "name": { "enum": ["Wolf3D_Body", "Wolf3D_Body_Custom"] }
                   }
                 },
                 "then": {
@@ -69,7 +69,7 @@
               {
                 "if": {
                   "properties": {
-                    "name": { "const": "Wolf3D_Head_Custom" }
+                    "name": { "enum": ["Wolf3D_Head", "Wolf3D_Head_Custom"] }
                   }
                 },
                 "then": {
