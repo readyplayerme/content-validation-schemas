@@ -34,178 +34,8 @@
               "glPrimitives": { "type": "integer" }
             },
             "allOf": [
-              { "$ref": "commonMesh.schema.json" },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "enum": ["Wolf3D_Body", "Wolf3D_Body_Custom"] }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/bodyCustom"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "enum": ["EyeLeft", "EyeRight"]
-                    }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/eye"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "enum": ["Wolf3D_Head", "Wolf3D_Head_Custom"] }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/headCustom"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Outfit_Bottom" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/outfitBottom"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Outfit_Footwear" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/outfitFootwear"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Outfit_Top" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/outfitTop"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Teeth" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/teeth"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Beard" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/beard"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Facewear" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/facewear"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Glasses" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/glasses"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Hair" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/hair"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Headwear" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/headwear"
-                    }
-                  }
-                }
-              }
+              { "$ref": "commonMesh.schema.json" }
+
             ],
             "required": [
               "name",
@@ -242,13 +72,43 @@
                 "$ref": "materialNames.schema.json#/properties/costume"
               },
               "textures": {
-                "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
+                "description": "Textures used by the outfit materials. The 'Wolf3D_Body' material uses only the 'normalTexture'. All other materials can use all channels."
               },
               "doubleSided": {
                 "$ref": "commonMaterial.schema.json#/$defs/anySided"
               }
             },
             "allOf": [
+              { "$ref": "commonMaterial.schema.json" },
+              {
+                "if": {
+                  "properties": {
+                    "name": {
+                      "const": "Wolf3D_Body"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "textures": {
+                      "$ref": "commonMaterial.schema.json#/$defs/normalOnlyTextureChannels"
+                    },
+                    "doubleSided": {
+                      "$ref": "commonMaterial.schema.json#/$defs/singleSided"
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "textures": {
+                      "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
+                    },
+                    "doubleSided": {
+                      "$ref": "commonMaterial.schema.json#/$defs/anySided"
+                    }
+                  }
+                }
+              },
               {
                 "if": {
                   "properties": {

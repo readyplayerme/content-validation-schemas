@@ -34,62 +34,8 @@
               "glPrimitives": { "type": "integer" }
             },
             "allOf": [
-              { "$ref": "commonMesh.schema.json" },
               {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Body" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/body"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Outfit_Bottom" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/outfitBottom"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Outfit_Footwear" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/outfitFootwear"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Outfit_Top" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/outfitTop"
-                    }
-                  }
-                }
+                "$ref": "commonMesh.schema.json"
               }
             ],
             "required": [
