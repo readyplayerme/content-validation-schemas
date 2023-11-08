@@ -72,7 +72,7 @@
                 "$ref": "materialNames.schema.json#/properties/costume"
               },
               "textures": {
-                "description": "Textures used by the outfit materials. The 'Wolf3D_Body' material uses only the 'normalTexture'. All other materials can use all channels."
+                "description": "Textures used by the costume materials. The 'Wolf3D_Body' material uses only the 'normalTexture'. All other materials can use all channels."
               },
               "doubleSided": {
                 "$ref": "commonMaterial.schema.json#/$defs/anySided"
