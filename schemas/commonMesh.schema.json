@@ -20,6 +20,7 @@
       "maximum": 2,
       "errorMessage": "Number of primitives in the mesh must be 1, or 2 when an additional transparent material is used."
     },
+    "glPrimitives": { "type": "integer" },
     "indices": {
       "description": "The index of the accessor that contains the vertex indices.",
       "type": "array",

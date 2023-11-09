@@ -10,13 +10,7 @@
       "type": "object",
       "properties": {
         "totalTriangleCount": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 30000,
-          "errorMessage": {
-            "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-            "maximum": "Too many triangles (${0})! This asset must have no more than a total of 30,000 triangles."
-          }
+          "$ref": "meshTriangleCount.schema.json#/properties/costume"
         },
         "properties": {
           "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
@@ -30,8 +24,7 @@
               },
               "attributes": {
                 "$ref": "meshAttributes.schema.json#/properties/skinned"
-              },
-              "glPrimitives": { "type": "integer" }
+              }
             },
             "allOf": [
               { "$ref": "commonMesh.schema.json" }
@@ -109,7 +102,7 @@
                   }
                 },
                 "else": {
-                  "allOf": [{ "$ref": "commonMaterial.schema.json" }]
+                  "$ref": "commonMaterial.schema.json"
                 }
               },
               {
