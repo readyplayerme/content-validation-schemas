@@ -79,36 +79,6 @@
               }
             },
             "allOf": [
-              { "$ref": "commonMaterial.schema.json" },
-              {
-                "if": {
-                  "properties": {
-                    "name": {
-                      "const": "Wolf3D_Body"
-                    }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "textures": {
-                      "$ref": "commonMaterial.schema.json#/$defs/normalOnlyTextureChannels"
-                    },
-                    "doubleSided": {
-                      "$ref": "commonMaterial.schema.json#/$defs/singleSided"
-                    }
-                  }
-                },
-                "else": {
-                  "properties": {
-                    "textures": {
-                      "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
-                    },
-                    "doubleSided": {
-                      "$ref": "commonMaterial.schema.json#/$defs/anySided"
-                    }
-                  }
-                }
-              },
               {
                 "if": {
                   "properties": {
