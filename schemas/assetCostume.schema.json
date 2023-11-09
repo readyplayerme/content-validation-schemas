@@ -35,7 +35,6 @@
             },
             "allOf": [
               { "$ref": "commonMesh.schema.json" }
-
             ],
             "required": [
               "name",
