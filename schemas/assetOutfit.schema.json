@@ -10,13 +10,7 @@
       "type": "object",
       "properties": {
         "totalTriangleCount": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 20000,
-          "errorMessage": {
-            "minimum": "Too few triangles! Full-body outfit assets must have at least 1 triangle.",
-            "maximum": "Too many triangles (${0})! Full-body outfit assets must have no more than a total of 20,000 triangles."
-          }
+          "$ref": "meshTriangleCount.schema.json#/properties/outfit"
         },
         "properties": {
           "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
@@ -30,66 +24,11 @@
               },
               "attributes": {
                 "$ref": "meshAttributes.schema.json#/properties/skinned"
-              },
-              "glPrimitives": { "type": "integer" }
+              }
             },
             "allOf": [
-              { "$ref": "commonMesh.schema.json" },
               {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Body" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/body"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Outfit_Bottom" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/outfitBottom"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Outfit_Footwear" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/outfitFootwear"
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Outfit_Top" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "glPrimitives": {
-                      "$ref": "meshTriangleCount.schema.json#/properties/outfitTop"
-                    }
-                  }
-                }
+                "$ref": "commonMesh.schema.json"
               }
             ],
             "required": [

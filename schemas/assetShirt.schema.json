@@ -9,6 +9,9 @@
     "meshes": {
       "type": "object",
       "properties": {
+        "totalTriangleCount": {
+          "$ref": "meshTriangleCount.schema.json#/properties/halfbodyShirt"
+        },
         "properties": {
           "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
           "type": "array",
@@ -21,9 +24,6 @@
               },
               "attributes": {
                 "$ref": "meshAttributes.schema.json#/properties/unskinned"
-              },
-              "glPrimitives": {
-                "$ref": "meshTriangleCount.schema.json#/properties/halfbodyShirt"
               }
             },
             "allOf": [{ "$ref": "commonMesh.schema.json" }],

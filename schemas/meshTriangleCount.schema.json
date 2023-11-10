@@ -7,114 +7,83 @@
   "properties": {
     "beard": {
       "type": "integer",
+      "minimum": 1,
       "maximum": 1000,
       "errorMessage": {
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
         "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 1000. Found: ${0}."
       }
     },
-    "body": {
+    "costume": {
       "type": "integer",
-      "maximum": 14000,
+      "minimum": 1,
+      "maximum": 30000,
       "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 14000. Found: ${0}."
-      }
-    },
-    "bodyCustom": {
-      "type": "integer",
-      "maximum": 14000,
-      "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 14000. Found: ${0}."
-      }
-    },
-    "eyebrow": {
-      "type": "integer",
-      "maximum": 60,
-      "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 60. Found: ${0}."
-      }
-    },
-    "eye": {
-      "type": "integer",
-      "maximum": 210,
-      "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 210. Found: ${0}."
-      }
-    },
-    "facewear": {
-      "type": "integer",
-      "maximum": 2000,
-      "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 2000. Found: ${0}."
-      }
-    },
-    "glasses": {
-      "type": "integer",
-      "maximum": 1000,
-      "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 1000. Found: ${0}."
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 30000. Found: ${0}."
       }
     },
     "hair": {
       "type": "integer",
+      "minimum": 1,
       "maximum": 5000,
       "errorMessage": {
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
         "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 5000. Found: ${0}."
       }
     },
-    "head": {
+    "halfbodyShirt": {
       "type": "integer",
-      "maximum": 4574,
+      "minimum": 1,
+      "maximum": 1000,
       "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 4574. Found: ${0}."
-      }
-    },
-    "headCustom": {
-      "type": "integer",
-      "maximum": 6000,
-      "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 6000. Found: ${0}."
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 1000. Found: ${0}."
       }
     },
     "headwear": {
       "type": "integer",
+      "minimum": 1,
       "maximum": 2500,
       "errorMessage": {
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
         "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 2500. Found: ${0}."
+      }
+    },
+    "outfit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20000,
+      "errorMessage": {
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 20000. Found: ${0}."
       }
     },
     "outfitBottom": {
       "type": "integer",
+      "minimum": 1,
       "maximum": 7500,
       "errorMessage": {
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
         "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 7500. Found: ${0}."
       }
     },
     "outfitTop": {
       "type": "integer",
+      "minimum": 1,
       "maximum": 9000,
       "errorMessage": {
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
         "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 9000. Found: ${0}."
       }
     },
     "outfitFootwear": {
       "type": "integer",
+      "minimum": 1,
       "maximum": 2000,
       "errorMessage": {
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
         "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 2000. Found: ${0}."
-      }
-    },
-    "halfbodyShirt": {
-      "type": "integer",
-      "maximum": 1000,
-      "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 1000. Found: ${0}."
-      }
-    },
-    "teeth": {
-      "type": "integer",
-      "maximum": 1000,
-      "errorMessage": {
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 1000. Found: ${0}."
       }
     }
   }

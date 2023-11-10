@@ -9,6 +9,9 @@
     "meshes": {
       "type": "object",
       "properties": {
+        "totalTriangleCount": {
+          "$ref": "meshTriangleCount.schema.json#/properties/facewear"
+        },
         "properties": {
           "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
           "type": "array",
@@ -28,9 +31,6 @@
                     "$ref": "meshAttributes.schema.json#/properties/unskinned"
                   }
                 ]
-              },
-              "glPrimitives": {
-                "$ref": "meshTriangleCount.schema.json#/properties/facewear"
               }
             },
             "allOf": [{ "$ref": "commonMesh.schema.json" }],
