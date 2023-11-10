@@ -23,6 +23,22 @@
         "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 30000. Found: ${0}."
       }
     },
+    "facewear": {
+      "type": "integer",
+      "maximum": 2000,
+      "errorMessage": {
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 2000. Found: ${0}."
+      }
+    },
+    "glasses": {
+      "type": "integer",
+      "maximum": 1000,
+      "errorMessage": {
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
+        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 1000. Found: ${0}."
+      }
+    },
     "hair": {
       "type": "integer",
       "minimum": 1,
