@@ -11,7 +11,7 @@
       "maximum": 1000,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 1000. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 1000. Found: ${0}."
       }
     },
     "costume": {
@@ -20,7 +20,7 @@
       "maximum": 30000,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 30000. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 30000. Found: ${0}."
       }
     },
     "facewear": {
@@ -28,7 +28,7 @@
       "maximum": 2000,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 2000. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 2000. Found: ${0}."
       }
     },
     "glasses": {
@@ -36,7 +36,7 @@
       "maximum": 1000,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 1000. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 1000. Found: ${0}."
       }
     },
     "hair": {
@@ -45,7 +45,7 @@
       "maximum": 5000,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 5000. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 5000. Found: ${0}."
       }
     },
     "halfbodyShirt": {
@@ -54,7 +54,7 @@
       "maximum": 1000,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 1000. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 1000. Found: ${0}."
       }
     },
     "headwear": {
@@ -63,7 +63,7 @@
       "maximum": 2500,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 2500. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 2500. Found: ${0}."
       }
     },
     "outfit": {
@@ -72,7 +72,7 @@
       "maximum": 20000,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 20000. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 20000. Found: ${0}."
       }
     },
     "outfitBottom": {
@@ -81,7 +81,7 @@
       "maximum": 7500,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 7500. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 7500. Found: ${0}."
       }
     },
     "outfitTop": {
@@ -90,7 +90,7 @@
       "maximum": 9000,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 9000. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 9000. Found: ${0}."
       }
     },
     "outfitFootwear": {
@@ -99,7 +99,7 @@
       "maximum": 2000,
       "errorMessage": {
         "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-        "maximum": "Mesh ${1/name} exceeds triangle count budget. Allowed: 2000. Found: ${0}."
+        "maximum": "Meshes exceed total triangle count budget. Allowed: 2000. Found: ${0}."
       }
     }
   }
