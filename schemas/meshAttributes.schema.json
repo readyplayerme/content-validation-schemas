@@ -29,6 +29,7 @@
         "type": "string",
         "enum": [
           "JOINTS_0:u8",
+          "JOINTS_0:u16",
           "NORMAL:f32",
           "POSITION:f32",
           "TEXCOORD_0:f32",
@@ -39,7 +40,7 @@
       },
       "contains": {
         "type": "string",
-        "pattern": "JOINTS_0:u8|NORMAL:f32|POSITION:f32|TEXCOORD_0:f32|WEIGHTS_0:f32",
+        "pattern": "JOINTS_0:u8|JOINTS_0:u16|NORMAL:f32|POSITION:f32|TEXCOORD_0:f32|WEIGHTS_0:f32",
         "errorMessage": "Mesh ${2/name} requires at least 5 vertex attributes: position, normal, 1 UV set, joint influences, and weights. Found ${1/length} attributes: ${1}."
       },
       "minContains": 5,
