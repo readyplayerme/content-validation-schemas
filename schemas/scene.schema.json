@@ -120,21 +120,21 @@
           "prefixItems": [
             {
               "type": "number",
-              "minimum": -1.0,
+              "minimum": -1.5,
               "maximum": 0.0,
-              "errorMessage": "Bounding Box X minimum for body area must be between -1.0 and 0.0. Found ${0} and index ${0#}"
+              "errorMessage": "Bounding Box X minimum for body area must be between -1.5 and 0.0. Found ${0} for index ${0#}"
             },
             {
               "type": "number",
               "minimum": -0.1,
               "maximum": 1.5,
-              "errorMessage": "Bounding Box Y minimum for body area must be between -0.1 and 0.5. Found ${0} and index ${0#}"
+              "errorMessage": "Bounding Box Y minimum for body area must be between -0.1 and 0.5. Found ${0} for index ${0#}"
             },
             {
               "type": "number",
-              "minimum": -1.0,
+              "minimum": -1.5,
               "maximum": 0.0,
-              "errorMessage": "Bounding Box Z minimum for body area must be between -1.0 and 0.0. Found ${0} and index ${0#}"
+              "errorMessage": "Bounding Box Z minimum for body area must be between -1.5 and 0.0. Found ${0} for index ${0#}"
             }
           ],
           "items": false,
@@ -148,20 +148,20 @@
             {
               "type": "number",
               "minimum": 0.0,
-              "maximum": 1.0,
-              "errorMessage": "Bounding Box Z maximum for body area must be between 0.0 and 1.0. Found ${0} and index ${0#}"
+              "maximum": 1.5,
+              "errorMessage": "Bounding Box Z maximum for body area must be between 0.0 and 1.5. Found ${0} for index ${0#}"
             },
             {
               "type": "number",
               "minimum": 0.0,
               "maximum": 3.0,
-              "errorMessage": "Bounding Box Z maximum for body area must be between 0.0 and 3.0. Found ${0} and index ${0#}"
+              "errorMessage": "Bounding Box Z maximum for body area must be between 0.0 and 3.0. Found ${0} for index ${0#}"
             },
             {
               "type": "number",
               "minimum": 0.0,
-              "maximum": 1.0,
-              "errorMessage": "Bounding Box Z maximum for body area must be between 0.0 and 1.0. Found ${0} and index ${0#}"
+              "maximum": 1.5,
+              "errorMessage": "Bounding Box Z maximum for body area must be between 0.0 and 1.5. Found ${0} for index ${0#}"
             }
           ],
           "items": false,
