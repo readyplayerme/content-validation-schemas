@@ -23,7 +23,7 @@
     },
     "compression": { "type": "string" },
     "resolution": {
-      "description": "Image resolution data used for textures. Power of 2 and sqaure.",
+      "description": "Image resolution data used for textures. Power of 2 and square.",
       "type": "string",
       "oneOf": [
         { "const": "1x1" },
@@ -36,22 +36,24 @@
         { "const": "128x128" },
         { "const": "256x256" },
         { "const": "512x512" },
-        { "const": "1024x1024" }
+        { "const": "1024x1024" },
+        { "const": "2048x2048" },
+        { "const": "4096x4096" }
       ],
-      "errorMessage": "Image resolution for ${1/name} must be a power of 2 and square. Maximum 1024 x 1024. Found ${0} instead."
+      "errorMessage": "Image resolution for ${1/name} must be a power of 2 and square. Maximum 4096 x 4096. Found ${0} instead."
     },
     "size": {
       "type": "integer",
-      "maximum": 2097152,
+      "maximum": 4194304,
       "errorMessage": {
-        "maximum": "Texture map ${1/name} exceeds maximum allowed storage size of 2 MB."
+        "maximum": "Texture map ${1/name} exceeds maximum allowed storage size of 4 MB."
       }
     },
     "gpuSize": {
       "type": "integer",
-      "maximum": 6291456,
+      "maximum": 94371840,
       "errorMessage": {
-        "maximum": "Texture map ${1/name} exceeds maximum allowed GPU size of 6 MB when fully decompressed."
+        "maximum": "Texture map ${1/name} exceeds maximum allowed GPU size of 90 MB when fully decompressed."
       }
     }
   },
