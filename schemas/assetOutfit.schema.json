@@ -138,6 +138,16 @@
         },
         {
           "$ref": "joints.schema.json#/$defs/skeletonV2WithEyes"
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "joints.schema.json#/$defs/skeletonXr"
+            },
+            {
+              "$ref": "joints.schema.json#/$defs/skeletonXr/$defs/maxJoints"
+            }
+          ]
         }
       ]
     }
