@@ -147,7 +147,19 @@
     },
     "textures": { "$ref": "commonTexture.schema.json#/$defs/fullPBR" },
     "animations": { "$ref": "animation.schema.json#/properties/noAnimation" },
-    "joints": { "$ref": "joints.schema.json#/$defs/skeletonV2WithEyes" }
+    "joints": {
+      "anyOf": [
+        {
+          "$ref": "joints.schema.json#/$defs/skeletonV2WithEyes"
+        },
+        {
+          "allOf": [
+            { "$ref": "joints.schema.json#/$defs/skeletonXr" },
+            { "$ref": "joints.schema.json#/$defs/skeletonXr/$defs/maxJoints" }
+          ]
+        }
+      ]
+    }
   },
   "required": ["scenes", "meshes", "materials", "textures", "joints"]
 }
