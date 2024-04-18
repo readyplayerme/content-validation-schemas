@@ -68,6 +68,9 @@
               },
               "doubleSided": {
                 "$ref": "commonMaterial.schema.json#/$defs/anySided"
+              },
+              "alphaMode": {
+                "$ref": "commonMaterial.schema.json#/$defs/anyAlphaMode"
               }
             },
             "allOf": [
@@ -103,27 +106,6 @@
                 },
                 "else": {
                   "$ref": "commonMaterial.schema.json"
-                }
-              },
-              {
-                "if": {
-                  "properties": {
-                    "name": { "const": "Wolf3D_Glasses" }
-                  }
-                },
-                "then": {
-                  "properties": {
-                    "alphaMode": {
-                      "$ref": "commonMaterial.schema.json#/$defs/anyAlphaMode"
-                    }
-                  }
-                },
-                "else": {
-                  "properties": {
-                    "alphaMode": {
-                      "$ref": "commonMaterial.schema.json#/$defs/opaqueAlphaMode"
-                    }
-                  }
                 }
               }
             ],
