@@ -67,9 +67,6 @@
               },
               "textures": {
                 "description": "Textures used by the outfit materials. The 'Wolf3D_Body' material uses only the 'normalTexture'. All other materials can use all channels."
-              },
-              "alphaMode": {
-                "$ref": "commonMaterial.schema.json#/$defs/opaqueAlphaMode"
               }
             },
             "allOf": [
@@ -89,6 +86,9 @@
                     },
                     "doubleSided": {
                       "$ref": "commonMaterial.schema.json#/$defs/singleSided"
+                    },
+                    "alphaMode": {
+                      "$ref": "commonMaterial.schema.json#/$defs/opaqueAlphaMode"
                     }
                   }
                 },
@@ -99,6 +99,9 @@
                     },
                     "doubleSided": {
                       "$ref": "commonMaterial.schema.json#/$defs/anySided"
+                    },
+                    "alphaMode": {
+                      "$ref": "commonMaterial.schema.json#/$defs/anyAlphaMode"
                     }
                   }
                 }

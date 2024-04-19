@@ -62,7 +62,7 @@
                 "$ref": "commonMaterial.schema.json#/$defs/singleSided"
               },
               "alphaMode": {
-                "$ref": "commonMaterial.schema.json#/$defs/opaqueAlphaMode"
+                "$ref": "commonMaterial.schema.json#/$defs/anyAlphaMode"
               }
             },
             "allOf": [{ "$ref": "commonMaterial.schema.json" }],
