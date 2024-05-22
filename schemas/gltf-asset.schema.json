@@ -80,7 +80,9 @@
     },
     {
       "if": {
-        "properties": { "assetType": { "const": "bottom" } }
+        "properties": { "assetType": { "const": "bottom" } },
+        "required": ["assetType"]
+
       },
       "then": {
         "allOf": [
@@ -107,7 +109,8 @@
     },
     {
       "if": {
-        "properties": { "assetType": { "const": "footwear" } }
+        "properties": { "assetType": { "const": "footwear" } },
+        "required": ["assetType"]
       },
       "then": {
         "allOf": [
@@ -176,7 +179,8 @@
     },
     {
       "if": {
-        "properties": { "assetType": { "const": "top" } }
+        "properties": { "assetType": { "const": "top" } },
+        "required": ["assetType"]
       },
       "then": {
         "allOf": [
