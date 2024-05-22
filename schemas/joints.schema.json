@@ -244,11 +244,27 @@
             "LeftForeArmTwist": { "type": "string", "const": "LeftForeArm" },
             "LeftHand": { "type": "string", "const": "LeftForeArmTwist" },
             "LeftPalm": { "type": "string", "const": "LeftHand" },
+            "LeftHandIndex0": { "type": "string", "const": "LeftHand" },
+            "LeftHandIndex1": { "type": "string", "const": "LeftHandIndex0" },
+            "LeftHandMiddle0": { "type": "string", "const": "LeftHand" },
+            "LeftHandMiddle1": { "type": "string", "const": "LeftHandMiddle0" },
+            "LeftHandRing0": { "type": "string", "const": "LeftHand" },
+            "LeftHandRing1": { "type": "string", "const": "LeftHandRing0" },
+            "LeftHandPinky0": { "type": "string", "const": "LeftHand" },
+            "LeftHandPinky1": { "type": "string", "const": "LeftHandPinky0" },
             "RightArmTwist": { "type": "string", "const": "RightArm" },
             "RightForeArm": { "type": "string", "const": "RightArmTwist" },
             "RightForeArmTwist": { "type": "string", "const": "RightForeArm" },
             "RightHand": { "type": "string", "const": "RightForeArmTwist" },
-            "RightPalm": { "type": "string", "const": "RightHand" }
+            "RightPalm": { "type": "string", "const": "RightHand" },
+            "RightHandIndex0": { "type": "string", "const": "RightHand" },
+            "RightHandIndex1": { "type": "string", "const": "RightHandIndex0" },
+            "RightHandMiddle0": { "type": "string", "const": "RightHand" },
+            "RightHandMiddle1": { "type": "string", "const": "RightHandMiddle0" },
+            "RightHandRing0": { "type": "string", "const": "RightHand" },
+            "RightHandRing1": { "type": "string", "const": "RightHandRing0" },
+            "RightHandPinky0": { "type": "string", "const": "RightHand" },
+            "RightHandPinky1": { "type": "string", "const": "RightHandPinky0" }
           },
           "required": [
             "LeftEye",
@@ -256,9 +272,17 @@
             "LeftArmTwist",
             "LeftForeArmTwist",
             "LeftPalm",
+            "LeftHandIndex0",
+            "LeftHandMiddle0",
+            "LeftHandRing0",
+            "LeftHandPinky0",
             "RightArmTwist",
             "RightForeArmTwist",
-            "RightPalm"
+            "RightPalm",
+            "RightHandIndex0",
+            "RightHandMiddle0",
+            "RightHandRing0",
+            "RightHandPinky0"
           ],
           "errorMessage": {
             "required": {
