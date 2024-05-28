@@ -131,15 +131,8 @@
     "animations": { "$ref": "animation.schema.json#/properties/noAnimation" },
     "joints": {
       "anyOf": [
-        {
-          "$ref": "joints.schema.json#/$defs/skeletonV2WithEyes"
-        },
-        {
-          "allOf": [
-            { "$ref": "joints.schema.json#/$defs/skeletonXr" },
-            { "$ref": "joints.schema.json#/$defs/skeletonXr/$defs/maxJoints" }
-          ]
-        }
+        { "$ref": "joints.schema.json#/$defs/skeletonV2WithEyes" },
+        { "$ref": "joints.schema.json#/$defs/skeletonXr" }
       ]
     }
   },
