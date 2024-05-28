@@ -231,7 +231,7 @@
     "skeletonXr": {
       "$comment": "This schema extends the skeletonV2 schema.",
       "allOf": [
-        { "$ref": "#/$defs/skeletonXr" },
+        { "$ref": "#/$defs/skeletonV2" },
         { "$ref": "#/$defs/skeletonXr/$defs/maxJoints" },
         {
           "description": "Humanoid Ready Player Me XR skeleton hierarchy",
