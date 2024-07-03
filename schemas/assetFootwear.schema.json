@@ -93,18 +93,9 @@
     "animations": { "$ref": "animation.schema.json#/properties/noAnimation" },
     "joints": {
       "anyOf": [
-        {
-          "allOf": [
-            { "$ref": "joints.schema.json#/$defs/skeletonV2" },
-            { "$ref": "joints.schema.json#/$defs/skeletonV2/$defs/maxJoints" }
-          ]
-        },
-        {
-          "allOf": [
-            { "$ref": "joints.schema.json#/$defs/skeletonXr" },
-            { "$ref": "joints.schema.json#/$defs/skeletonXr/$defs/maxJoints" }
-          ]
-        }
+        { "$ref": "joints.schema.json#/$defs/skeletonV2" },
+        { "$ref": "joints.schema.json#/$defs/skeletonV2WithEyes" },
+        { "$ref": "joints.schema.json#/$defs/skeletonXr" }
       ]
     }
   },
