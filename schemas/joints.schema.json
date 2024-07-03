@@ -16,7 +16,7 @@
       "description": "Headwear skeleton hierarchy.",
       "type": "object",
       "properties": {
-        "Spine": { "type": "string", "const": "Headwear_Rig" },
+        "Spine": { "type": "string", "enum": ["Headwear_Rig", "Armature"] },
         "Neck": { "type": "string", "const": "Spine" },
         "Head": { "type": "string", "const": "Neck" }
       },
