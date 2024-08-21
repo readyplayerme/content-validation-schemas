@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "customAsset.schema.json",
+  "title": "Custom Asset",
+  "description": "A Ready Player Me glTF binary validation schema for a custom asset with a custom type.",
+  "type": "object",
+  "properties": {
+    "meshes": {
+      "type": "object",
+      "properties": {
+        "totalTriangleCount": {
+          "$ref": "meshTriangleCount.schema.json#/properties/custom"
+        },
+        "properties": {
+          "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "$ref": "meshAttributes.schema.json#/properties/skinned"
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "commonMesh.schema.json"
+              }
+            ],
+            "required": [
+              "name",
+              "mode",
+              "primitives",
+              "glPrimitives",
+              "vertices",
+              "indices",
+              "attributes",
+              "instances",
+              "size"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "errorMessage": {
+            "minItems": "Missing mesh! Full-body outfit asset must have at least 1 mesh.",
+            "maxItems": "Too many meshes! Full-body outfit asset must have no more than 20 meshes."
+          }
+        }
+      }
+    },
+    "materials": {
+      "type": "object",
+      "properties": {
+        "properties": {
+          "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "commonMaterial.schema.json"
+              },
+              {
+                "properties": {
+                  "textures": {
+                    "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
+                  },
+                  "doubleSided": {
+                    "$ref": "commonMaterial.schema.json#/$defs/anySided"
+                  },
+                  "alphaMode": {
+                    "$ref": "commonMaterial.schema.json#/$defs/anyAlphaMode"
+                  }
+                }
+              }
+            ],
+            "required": [
+              "name",
+              "instances",
+              "textures",
+              "alphaMode",
+              "doubleSided"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": {
+            "$data": "/meshes/properties/length"
+          },
+          "maxItems": {
+            "$data": "/meshes/properties/length"
+          },
+          "errorMessage": {
+            "minItems": "Missing material! This asset must have ${/meshes/properties/length} materials, one for each mesh. Found ${/materials/properties/length}.",
+            "maxItems": "Too many materials! This asset must have ${/meshes/properties/length} materials, one for each mesh. Found ${/materials/properties/length}."
+          }
+        }
+      }
+    },
+    "textures": {
+      "$ref": "commonTexture.schema.json#/$defs/fullPBR"
+    },
+    "animations": {
+      "$ref": "animation.schema.json#/properties/noAnimation"
+    },
+    "required": [
+      "meshes",
+      "materials"
+    ]
+  }
+}

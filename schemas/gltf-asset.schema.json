@@ -9,22 +9,8 @@
       "description": "The type of asset.",
       "type": "string",
       "default": "outfit",
-      "enum": [
-        "beard",
-        "bottom",
-        "facewear",
-        "footwear",
-        "glasses",
-        "hair",
-        "headwear",
-        "costume",
-        "outfit",
-        "shirt",
-        "top"
-      ],
       "errorMessage": {
-        "type": "Asset type should be a string.",
-        "enum": "Asset type should be one of the following: beard, bottom, facemask, facewear, footwear, glasses, hair, headwear, costume, outfit, shirt, top. Found ${0}."
+        "type": "Asset type should be a string."
       }
     },
     "transforms": {
@@ -186,6 +172,35 @@
           }
         ]
       }
+    },
+    {
+      "if": {
+        "not": {
+          "properties": {
+            "assetType": {
+              "enum": [
+                "outfit",
+                "beard",
+                "bottom",
+                "facewear",
+                "footwear",
+                "glasses",
+                "hair",
+                "headwear",
+                "costume",
+                "shirt",
+                "top"
+              ]
+            }
+          }
+        }
+      },
+      "then": {
+        "allOf": [
+          { "$ref": "customAsset.schema.json" }
+        ]
+      },
+      "$comment": "Outfit is the default asset type if no assetType is set in the data."
     }
   ],
   "errorMessage": {
