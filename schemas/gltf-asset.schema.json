@@ -199,8 +199,7 @@
         "allOf": [
           { "$ref": "customAsset.schema.json" }
         ]
-      },
-      "$comment": "Outfit is the default asset type if no assetType is set in the data."
+      }
     }
   ],
   "errorMessage": {
