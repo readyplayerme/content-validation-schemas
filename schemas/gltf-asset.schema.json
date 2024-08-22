@@ -197,7 +197,7 @@
       },
       "then": {
         "allOf": [
-          { "$ref": "customAsset.schema.json" }
+          { "$ref": "assetCustom.schema.json" }
         ]
       }
     }

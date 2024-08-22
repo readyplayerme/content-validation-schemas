@@ -44,9 +44,9 @@
     },
     "size": {
       "type": "integer",
-      "maximum": 10485760,
+      "maximum": 4194304,
       "errorMessage": {
-        "maximum": "Texture map ${1/name} exceeds maximum allowed storage size of 10 MB."
+        "maximum": "Texture map ${1/name} exceeds maximum allowed storage size of 4 MB."
       }
     },
     "gpuSize": {
