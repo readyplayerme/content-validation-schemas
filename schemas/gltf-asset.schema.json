@@ -8,7 +8,7 @@
     "assetType": {
       "description": "The type of asset.",
       "type": "string",
-      "default": "outfit",
+      "default": "custom",
       "errorMessage": {
         "type": "Asset type should be a string."
       }
@@ -47,7 +47,34 @@
   "allOf": [
     {
       "if": {
-        "properties": { "assetType": { "const": "outfit" } }
+        "not": {
+          "properties": {
+            "assetType": {
+              "enum": [
+                "outfit",
+                "beard",
+                "bottom",
+                "facewear",
+                "footwear",
+                "glasses",
+                "hair",
+                "headwear",
+                "costume",
+                "shirt",
+                "top"
+              ]
+            }
+          }
+        }
+      },
+      "then": {
+        "allOf": [{ "$ref": "assetCustom.schema.json" }]
+      }
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "outfit" } },
+        "required": ["assetType"]
       },
       "then": {
         "allOf": [
@@ -66,7 +93,8 @@
     },
     {
       "if": {
-        "properties": { "assetType": { "const": "bottom" } }
+        "properties": { "assetType": { "const": "bottom" } },
+        "required": ["assetType"]
       },
       "then": {
         "allOf": [
@@ -93,7 +121,8 @@
     },
     {
       "if": {
-        "properties": { "assetType": { "const": "footwear" } }
+        "properties": { "assetType": { "const": "footwear" } },
+        "required": ["assetType"]
       },
       "then": {
         "allOf": [
@@ -162,7 +191,8 @@
     },
     {
       "if": {
-        "properties": { "assetType": { "const": "top" } }
+        "properties": { "assetType": { "const": "top" } },
+        "required": ["assetType"]
       },
       "then": {
         "allOf": [
@@ -170,34 +200,6 @@
           {
             "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
           }
-        ]
-      }
-    },
-    {
-      "if": {
-        "not": {
-          "properties": {
-            "assetType": {
-              "enum": [
-                "outfit",
-                "beard",
-                "bottom",
-                "facewear",
-                "footwear",
-                "glasses",
-                "hair",
-                "headwear",
-                "costume",
-                "shirt",
-                "top"
-              ]
-            }
-          }
-        }
-      },
-      "then": {
-        "allOf": [
-          { "$ref": "assetCustom.schema.json" }
         ]
       }
     }
