@@ -8,23 +8,9 @@
     "assetType": {
       "description": "The type of asset.",
       "type": "string",
-      "default": "outfit",
-      "enum": [
-        "beard",
-        "bottom",
-        "facewear",
-        "footwear",
-        "glasses",
-        "hair",
-        "headwear",
-        "costume",
-        "outfit",
-        "shirt",
-        "top"
-      ],
+      "default": "custom",
       "errorMessage": {
-        "type": "Asset type should be a string.",
-        "enum": "Asset type should be one of the following: beard, bottom, facemask, facewear, footwear, glasses, hair, headwear, costume, outfit, shirt, top. Found ${0}."
+        "type": "Asset type should be a string."
       }
     },
     "transforms": {
@@ -61,7 +47,34 @@
   "allOf": [
     {
       "if": {
-        "properties": { "assetType": { "const": "outfit" } }
+        "not": {
+          "properties": {
+            "assetType": {
+              "enum": [
+                "outfit",
+                "beard",
+                "bottom",
+                "facewear",
+                "footwear",
+                "glasses",
+                "hair",
+                "headwear",
+                "costume",
+                "shirt",
+                "top"
+              ]
+            }
+          }
+        }
+      },
+      "then": {
+        "allOf": [{ "$ref": "assetCustom.schema.json" }]
+      }
+    },
+    {
+      "if": {
+        "properties": { "assetType": { "const": "outfit" } },
+        "required": ["assetType"]
       },
       "then": {
         "allOf": [
@@ -80,7 +93,8 @@
     },
     {
       "if": {
-        "properties": { "assetType": { "const": "bottom" } }
+        "properties": { "assetType": { "const": "bottom" } },
+        "required": ["assetType"]
       },
       "then": {
         "allOf": [
@@ -107,7 +121,8 @@
     },
     {
       "if": {
-        "properties": { "assetType": { "const": "footwear" } }
+        "properties": { "assetType": { "const": "footwear" } },
+        "required": ["assetType"]
       },
       "then": {
         "allOf": [
@@ -176,7 +191,8 @@
     },
     {
       "if": {
-        "properties": { "assetType": { "const": "top" } }
+        "properties": { "assetType": { "const": "top" } },
+        "required": ["assetType"]
       },
       "then": {
         "allOf": [

@@ -23,6 +23,15 @@
         "maximum": "Too many triangles! This asset must not have more than 30000 triangles. Found: ${0}."
       }
     },
+    "custom": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 80000,
+      "errorMessage": {
+        "minimum": "Too few triangles! This asset must have at least 1 triangle.",
+        "maximum": "Too many triangles! This asset must not have more than 80000 triangles. Found: ${0}."
+      }
+    },
     "facewear": {
       "type": "integer",
       "maximum": 2000,
