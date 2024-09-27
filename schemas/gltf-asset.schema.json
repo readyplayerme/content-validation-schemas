@@ -13,23 +13,6 @@
         "type": "Asset type should be a string."
       }
     },
-    "transforms": {
-      "description": "The transforms of the objects (meshes & skeleton root).",
-      "type": "object",
-      "additionalProperties": {
-        "type": "array",
-        "minItems": 16,
-        "maxItems": 16,
-        "items": {
-          "type": "number"
-        },
-        "const": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-        "errorMessage": {
-          "const": "Transforms for ${0#} must be neutral (identity matrix: zero translation or rotation, scale of 1). Found ${0}.",
-          "_": "Transforms for ${0#} must be an array of 16 numbers (flattened 4x4 identity matrix). Found ${0/length} numbers."
-        }
-      }
-    },
     "gltfErrors": {
       "description": "The errors encountered during glTF validation.",
       "type": "array",
@@ -42,9 +25,33 @@
       }
     }
   },
-  "required": ["transforms", "gltfErrors"],
+  "required": ["gltfErrors"],
   "$comment": "Below are the asset type specific schemas defined. Some asset share a material definition, but differ in the number of supported textures.",
   "allOf": [
+    {
+      "if": {
+          "properties": {
+            "assetType": {
+              "enum": [
+                "outfit",
+                "beard",
+                "bottom",
+                "facewear",
+                "footwear",
+                "glasses",
+                "hair",
+                "headwear",
+                "costume",
+                "shirt",
+                "top"
+              ]
+            }
+          }
+      },
+      "then": {
+        "allOf": [{ "$ref": "commonTransforms.schema.json" }]
+      }
+    },
     {
       "if": {
         "not": {
