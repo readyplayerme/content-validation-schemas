@@ -22,26 +22,23 @@
           "type": "array",
           "items": {
             "type": "object",
-            "allOf": [
-              {
-                "$ref": "commonMesh.schema.json"
+            "properties": {
+              "mode": {
+                "description": "The rendering mode of the mesh. Only TRIANGLES are supported.",
+                "type": "array",
+                "prefixItems": [{ "const": "TRIANGLES" }],
+                "minItems": 1,
+                "maxItems": 1,
+                "errorMessage": "Rendering mode must be TRIANGLES."
               }
-            ],
-            "required": [
-              "mode",
-              "primitives",
-              "glPrimitives",
-              "vertices",
-              "indices",
-              "instances",
-              "size"
-            ]
+            },
+            "required": ["mode"]
           },
           "minItems": 1,
           "maxItems": 20,
           "errorMessage": {
-            "minItems": "Missing mesh! Full-body outfit asset must have at least 1 mesh.",
-            "maxItems": "Too many meshes! Full-body outfit asset must have no more than 20 meshes."
+            "minItems": "Missing mesh! Asset must have at least 1 mesh.",
+            "maxItems": "Too many meshes! Asset must have no more than 20 meshes."
           }
         }
       }
@@ -106,8 +103,5 @@
       }
     }
   },
-  "required": [
-    "meshes",
-    "textures"
-  ]
+  "required": ["meshes", "textures"]
 }
