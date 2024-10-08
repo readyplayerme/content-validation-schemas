@@ -75,17 +75,10 @@
         "enum": ["baseColorTexture", "emissiveTexture", "metallicRoughnessTexture", "normalTexture", "occlusionTexture"],
         "errorMessage": "Material ${2/name} uses unsupported texture slot ${0}! Supported slots are baseColorTexture, emissiveTexture, metallicRoughnessTexture, normalTexture, and occlusionTexture."
       },
-      "contains": {
-        "type": "string",
-        "const": "baseColorTexture"
-      },
-      "minContains": 1,
       "uniqueItems": true,
-      "minItems": 1,
+      "minItems": 0,
       "maxItems": 5,
       "errorMessage": {
-        "contains": "Material ${1/name} must use a baseColorTexture.",
-        "minItems": "Material ${1/name} must use at least a baseColorTexture. Found ${0/length} texture maps: ${0}.",
         "maxItems": "Material ${1/name} uses too many texture slots. 5 are supported. Found ${0}."
       }
     },
