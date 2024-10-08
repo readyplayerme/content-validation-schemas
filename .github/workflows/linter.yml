@@ -17,7 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Get JSON schema filenames
+        run: |
+          schema_files=$(find schemas -name '*.json' -print0 | xargs -0 -I {} sh -c 'printf "%s\0" "{}"' | jq -Rs 'split("\u0000")[:-1]')
+          echo "Found JSON schema files: $schema_files"
       - name: Validate all json files using their own $schema properties
-        uses: cardinalby/schema-validator-action@v1
+        uses: cardinalby/schema-validator-action@v2
         with:
           file: "schemas/*.schema.json"
+          refSchemasArray: ${{ steps.get_json_schema_files.outputs.schema_files }}
