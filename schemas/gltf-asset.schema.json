@@ -18,7 +18,7 @@
       "type": "string",
       "default": "custom",
       "errorMessage": {
-        "type": "Asset type should be a string."
+        "type": "Bodytype should be a string."
       }
     },
     "gltfErrors": {
