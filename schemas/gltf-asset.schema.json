@@ -40,7 +40,7 @@
       "if": {
         "properties": {
           "bodyType": {
-            "const": "phoenix"
+            "const": "cage-mesh-based"
           }
         },
         "required": ["bodyType"]
