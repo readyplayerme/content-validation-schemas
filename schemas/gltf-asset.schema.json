@@ -16,9 +16,8 @@
     "bodyType": {
       "description": "The bodyType of asset.",
       "type": "string",
-      "default": "custom",
       "errorMessage": {
-        "type": "Bodytype should be a string."
+        "type": "Body type should be a string."
       }
     },
     "gltfErrors": {
