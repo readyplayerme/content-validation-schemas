@@ -103,31 +103,34 @@
       }
     },
     "nova": {
-      "bottom": {
-        "type": "integer",
-        "minimum": 1,
-        "maximum": 6000,
-        "errorMessage": {
-          "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-          "maximum": "Too many triangles! This asset must not have more than 6000 triangles. Found: ${0}."
-        }
-      },
-      "top": {
-        "type": "integer",
-        "minimum": 1,
-        "maximum": 8000,
-        "errorMessage": {
-          "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-          "maximum": "Too many triangles! This asset must not have more than 8000 triangles. Found: ${0}."
-        }
-      },
-      "footwear": {
-        "type": "integer",
-        "minimum": 1,
-        "maximum": 4000,
-        "errorMessage": {
-          "minimum": "Too few triangles! This asset must have at least 1 triangle.",
-          "maximum": "Too many triangles! This asset must not have more than 4000 triangles. Found: ${0}."
+      "type": "object",
+      "properties": {
+        "bottom": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6000,
+          "errorMessage": {
+            "minimum": "Too few triangles! This asset must have at least 1 triangle.",
+            "maximum": "Too many triangles! This asset must not have more than 6000 triangles. Found: ${0}."
+          }
+        },
+        "top": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8000,
+          "errorMessage": {
+            "minimum": "Too few triangles! This asset must have at least 1 triangle.",
+            "maximum": "Too many triangles! This asset must not have more than 8000 triangles. Found: ${0}."
+          }
+        },
+        "footwear": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4000,
+          "errorMessage": {
+            "minimum": "Too few triangles! This asset must have at least 1 triangle.",
+            "maximum": "Too many triangles! This asset must not have more than 4000 triangles. Found: ${0}."
+          }
         }
       }
     }

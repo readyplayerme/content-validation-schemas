@@ -44,7 +44,7 @@
         },
         "required": ["bodyType"]
       },
-      "than": {
+      "then": {
         "allOf": [
           {
             "if": {

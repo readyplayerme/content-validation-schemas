@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "assetFootwear.schema.json",
+  "$id": "assetFootwear.nova.schema.json",
   "title": "Modular Footwear Outfit Asset",
   "description": "A Ready Player Me glTF binary validation schema for a footwear module of an outfit.",
   "type": "object",
@@ -10,7 +10,7 @@
       "type": "object",
       "properties": {
         "totalTriangleCount": {
-          "$ref": "meshTriangleCount.schema.json#/properties/nova/footwear"
+          "$ref": "meshTriangleCount.schema.json#/properties/nova/properties/footwear"
         },
         "properties": {
           "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
@@ -20,7 +20,7 @@
             "properties": {
               "name": {
                 "description": "Name of the mesh.",
-                "$ref": "meshNames.schema.json#/properties/nova/footwear"
+                "$ref": "meshNames.schema.json#/properties/nova/properties/footwear"
               },
               "attributes": {
                 "$ref": "meshAttributes.schema.json#/properties/skinned"
@@ -59,7 +59,7 @@
             "properties": {
               "name": {
                 "description": "Name of the material.",
-                "$ref": "materialNames.schema.json#/properties/nova/footwear"
+                "$ref": "materialNames.schema.json#/properties/nova/properties/footwear"
               },
               "textures": {
                 "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
