@@ -1,16 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "assetFacewear.schema.json",
-  "title": "Facewear Asset",
-  "description": "A Ready Player Me glTF binary validation schema for facewear.",
+  "$id": "assetFootwear.schema.json",
+  "title": "Modular Footwear Outfit Asset",
+  "description": "A Ready Player Me glTF binary validation schema for a footwear module of an outfit.",
   "type": "object",
   "properties": {
-    "scenes": { "$ref": "scene.schema.json#/$defs/singleMeshScene" },
+    "scenes": { "$ref": "scene.schema.json#/$defs/fullbodyOutfitScene" },
     "meshes": {
       "type": "object",
       "properties": {
         "totalTriangleCount": {
-          "$ref": "meshTriangleCount.schema.json#/properties/facewear"
+          "$ref": "meshTriangleCount.schema.json#/properties/nova/footwear"
         },
         "properties": {
           "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
@@ -20,17 +20,10 @@
             "properties": {
               "name": {
                 "description": "Name of the mesh.",
-                "$ref": "meshNames.schema.json#/properties/facewear"
+                "$ref": "meshNames.schema.json#/properties/nova/footwear"
               },
               "attributes": {
-                "oneOf": [
-                  {
-                    "$ref": "meshAttributes.schema.json#/properties/skinned"
-                  },
-                  {
-                    "$ref": "meshAttributes.schema.json#/properties/unskinned"
-                  }
-                ]
+                "$ref": "meshAttributes.schema.json#/properties/skinned"
               }
             },
             "allOf": [{ "$ref": "commonMesh.schema.json" }],
@@ -45,6 +38,12 @@
               "instances",
               "size"
             ]
+          },
+          "minItems": 1,
+          "maxItems": 1,
+          "errorMessage": {
+            "minItems": "Missing mesh! Footwear asset must have 1 mesh.",
+            "maxItems": "Too many meshes! Footwear asset must have 1 mesh only."
           }
         }
       }
@@ -60,7 +59,7 @@
             "properties": {
               "name": {
                 "description": "Name of the material.",
-                "$ref": "materialNames.schema.json#/properties/facewear"
+                "$ref": "materialNames.schema.json#/properties/nova/footwear"
               },
               "textures": {
                 "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
@@ -82,16 +81,26 @@
             ]
           },
           "minItems": 1,
-          "maxItems": 2,
+          "maxItems": 1,
           "errorMessage": {
-            "minItems": "Missing material! Facewear asset must have at least 1 material.",
-            "maxItems": "Too many materials! Facewear asset must have at most 2 materials, one opaque and one transparent."
+            "minItems": "Missing material! This footwear asset must have 1 material. Found ${/materials/properties/length}.",
+            "maxItems": "Too many materials! This footwear asset must have 1 material. Found ${/materials/properties/length}."
           }
         }
       }
     },
     "textures": { "$ref": "commonTexture.schema.json#/$defs/fullPBR" },
-    "animations": { "$ref": "animation.schema.json#/properties/noAnimation" }
+    "animations": { "$ref": "animation.schema.json#/properties/noAnimation" },
+    "joints": {
+      "anyOf": [
+        {
+          "allOf": [
+            { "$ref": "joints.schema.json#/$defs/skeletonV3" },
+            { "$ref": "joints.schema.json#/$defs/skeletonV3/$defs/maxJoints" }
+          ]
+        }
+      ]
+    }
   },
-  "required": ["scenes", "meshes", "materials", "textures"]
+  "required": ["scenes", "meshes", "materials", "textures", "joints"]
 }

@@ -39,31 +39,20 @@
       "if": {
         "properties": {
           "bodyType": {
-            "const": "cage-mesh-based"
+            "const": "nova"
           }
         },
         "required": ["bodyType"]
       },
-      "then": {
-        "allOf": [{ "$ref": "assetCustom.schema.json" }]
-      },
-      "else": {
+      "than": {
         "allOf": [
           {
             "if": {
               "properties": {
                 "assetType": {
                   "enum": [
-                    "outfit",
-                    "beard",
                     "bottom",
-                    "facewear",
                     "footwear",
-                    "glasses",
-                    "hair",
-                    "headwear",
-                    "costume",
-                    "shirt",
                     "top"
                   ]
                 }
@@ -75,7 +64,64 @@
           },
           {
             "if": {
-              "not": {
+              "properties": { "assetType": { "const": "bottom" } },
+              "required": ["assetType"]
+            },
+            "then": {
+              "allOf": [
+                { "$ref": "assetBottom.nova.schema.json" },
+                {
+                  "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+                }
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": { "assetType": { "const": "footwear" } },
+              "required": ["assetType"]
+            },
+            "then": {
+              "allOf": [
+                { "$ref": "assetFootwear.nova.schema.json" },
+                {
+                  "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+                }
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": { "assetType": { "const": "top" } },
+              "required": ["assetType"]
+            },
+            "then": {
+              "allOf": [
+                { "$ref": "assetTop.nova.schema.json" },
+                {
+                  "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "else": {
+        "if": {
+          "properties": {
+            "bodyType": {
+              "const": "cage-mesh-based"
+            }
+          },
+          "required": ["bodyType"]
+        },
+        "then": {
+          "allOf": [{ "$ref": "assetCustom.schema.json" }]
+        },
+        "else": {
+          "allOf": [
+            {
+              "if": {
                 "properties": {
                   "assetType": {
                     "enum": [
@@ -93,145 +139,171 @@
                     ]
                   }
                 }
+              },
+              "then": {
+                "allOf": [{ "$ref": "commonTransforms.schema.json" }]
               }
             },
-            "then": {
-              "allOf": [{ "$ref": "assetCustom.schema.json" }]
-            }
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "outfit" } },
-              "required": ["assetType"]
-            },
-            "then": {
-              "allOf": [
-                { "$ref": "assetOutfit.schema.json" },
-                { "$ref": "assetOutfit.schema.json#/$defs/outfitTextureCount" }
-              ]
-            },
-            "$comment": "Outfit is the default asset type if no assetType is set in the data."
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "beard" } },
-              "required": ["assetType"]
-            },
-            "then": { "$ref": "assetBeard.schema.json" }
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "bottom" } },
-              "required": ["assetType"]
-            },
-            "then": {
-              "allOf": [
-                { "$ref": "assetBottom.schema.json" },
-                {
-                  "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+            {
+              "if": {
+                "not": {
+                  "properties": {
+                    "assetType": {
+                      "enum": [
+                        "outfit",
+                        "beard",
+                        "bottom",
+                        "facewear",
+                        "footwear",
+                        "glasses",
+                        "hair",
+                        "headwear",
+                        "costume",
+                        "shirt",
+                        "top"
+                      ]
+                    }
+                  }
                 }
-              ]
+              },
+              "then": {
+                "allOf": [{ "$ref": "assetCustom.schema.json" }]
+              }
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "outfit" } },
+                "required": ["assetType"]
+              },
+              "then": {
+                "allOf": [
+                  { "$ref": "assetOutfit.schema.json" },
+                  { "$ref": "assetOutfit.schema.json#/$defs/outfitTextureCount" }
+                ]
+              },
+              "$comment": "Outfit is the default asset type if no assetType is set in the data."
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "beard" } },
+                "required": ["assetType"]
+              },
+              "then": { "$ref": "assetBeard.schema.json" }
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "bottom" } },
+                "required": ["assetType"]
+              },
+              "then": {
+                "allOf": [
+                  { "$ref": "assetBottom.schema.json" },
+                  {
+                    "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "facewear" } },
+                "required": ["assetType"]
+              },
+              "then": {
+                "allOf": [
+                  { "$ref": "assetFacewear.schema.json" },
+                  {
+                    "$ref": "commonTexture.schema.json#/$defs/dualMaterialTextureCount"
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "footwear" } },
+                "required": ["assetType"]
+              },
+              "then": {
+                "allOf": [
+                  { "$ref": "assetFootwear.schema.json" },
+                  {
+                    "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "glasses" } },
+                "required": ["assetType"]
+              },
+              "then": {
+                "allOf": [
+                  { "$ref": "assetGlasses.schema.json" },
+                  {
+                    "$ref": "commonTexture.schema.json#/$defs/dualMaterialTextureCount"
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "hair" } },
+                "required": ["assetType"]
+              },
+              "then": { "$ref": "assetHair.schema.json" }
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "headwear" } },
+                "required": ["assetType"]
+              },
+              "then": {
+                "allOf": [
+                  { "$ref": "assetHeadwear.schema.json" },
+                  {
+                    "$ref": "commonTexture.schema.json#/$defs/dualMaterialTextureCount"
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "costume" } },
+                "required": ["assetType"]
+              },
+              "then": { "$ref": "assetCostume.schema.json" }
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "shirt" } },
+                "required": ["assetType"]
+              },
+              "then": {
+                "allOf": [
+                  { "$ref": "assetShirt.schema.json" },
+                  {
+                    "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": { "assetType": { "const": "top" } },
+                "required": ["assetType"]
+              },
+              "then": {
+                "allOf": [
+                  { "$ref": "assetTop.schema.json" },
+                  {
+                    "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
+                  }
+                ]
+              }
             }
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "facewear" } },
-              "required": ["assetType"]
-            },
-            "then": {
-              "allOf": [
-                { "$ref": "assetFacewear.schema.json" },
-                {
-                  "$ref": "commonTexture.schema.json#/$defs/dualMaterialTextureCount"
-                }
-              ]
-            }
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "footwear" } },
-              "required": ["assetType"]
-            },
-            "then": {
-              "allOf": [
-                { "$ref": "assetFootwear.schema.json" },
-                {
-                  "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
-                }
-              ]
-            }
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "glasses" } },
-              "required": ["assetType"]
-            },
-            "then": {
-              "allOf": [
-                { "$ref": "assetGlasses.schema.json" },
-                {
-                  "$ref": "commonTexture.schema.json#/$defs/dualMaterialTextureCount"
-                }
-              ]
-            }
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "hair" } },
-              "required": ["assetType"]
-            },
-            "then": { "$ref": "assetHair.schema.json" }
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "headwear" } },
-              "required": ["assetType"]
-            },
-            "then": {
-              "allOf": [
-                { "$ref": "assetHeadwear.schema.json" },
-                {
-                  "$ref": "commonTexture.schema.json#/$defs/dualMaterialTextureCount"
-                }
-              ]
-            }
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "costume" } },
-              "required": ["assetType"]
-            },
-            "then": { "$ref": "assetCostume.schema.json" }
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "shirt" } },
-              "required": ["assetType"]
-            },
-            "then": {
-              "allOf": [
-                { "$ref": "assetShirt.schema.json" },
-                {
-                  "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
-                }
-              ]
-            }
-          },
-          {
-            "if": {
-              "properties": { "assetType": { "const": "top" } },
-              "required": ["assetType"]
-            },
-            "then": {
-              "allOf": [
-                { "$ref": "assetTop.schema.json" },
-                {
-                  "$ref": "commonTexture.schema.json#/$defs/singleMaterialTextureCount"
-                }
-              ]
-            }
-          }
-        ]
+          ]
+        }
       }
     }
   ],

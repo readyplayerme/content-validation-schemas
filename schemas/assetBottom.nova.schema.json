@@ -1,16 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "assetBeard.schema.json",
-  "title": "Beard Asset",
-  "description": "A Ready Player Me glTF binary validation schema for beards.",
+  "$id": "assetBottom.schema.json",
+  "title": "Modular Bottom Outfit Asset",
+  "description": "A Ready Player Me glTF binary validation schema for a bottom module of an outfit.",
   "type": "object",
   "properties": {
-    "scenes": { "$ref": "scene.schema.json#/$defs/singleMeshScene" },
+    "scenes": { "$ref": "scene.schema.json#/$defs/fullbodyOutfitScene" },
     "meshes": {
       "type": "object",
       "properties": {
         "totalTriangleCount": {
-          "$ref": "meshTriangleCount.schema.json#/properties/beard"
+          "$ref": "meshTriangleCount.schema.json#/properties/nova/bottom"
         },
         "properties": {
           "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
@@ -20,10 +20,10 @@
             "properties": {
               "name": {
                 "description": "Name of the mesh.",
-                "$ref": "meshNames.schema.json#/properties/beard"
+                "$ref": "meshNames.schema.json#/properties/nova/bottom"
               },
               "attributes": {
-                "$ref": "meshAttributes.schema.json#/properties/unskinned"
+                "$ref": "meshAttributes.schema.json#/properties/skinned"
               }
             },
             "allOf": [{ "$ref": "commonMesh.schema.json" }],
@@ -38,6 +38,12 @@
               "instances",
               "size"
             ]
+          },
+          "minItems": 1,
+          "maxItems": 1,
+          "errorMessage": {
+            "minItems": "Missing mesh! Bottom asset must have 1 mesh.",
+            "maxItems": "Too many meshes! Bottom asset must have 1 mesh only."
           }
         }
       }
@@ -53,13 +59,13 @@
             "properties": {
               "name": {
                 "description": "Name of the material.",
-                "$ref": "materialNames.schema.json#/properties/beard"
+                "$ref": "materialNames.schema.json#/properties/nova/bottom"
               },
               "textures": {
-                "$ref": "commonMaterial.schema.json#/$defs/normalOnlyTextureChannels"
+                "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
               },
               "doubleSided": {
-                "$ref": "commonMaterial.schema.json#/$defs/singleSided"
+                "$ref": "commonMaterial.schema.json#/$defs/anySided"
               },
               "alphaMode": {
                 "$ref": "commonMaterial.schema.json#/$defs/anyAlphaMode"
@@ -77,14 +83,24 @@
           "minItems": 1,
           "maxItems": 1,
           "errorMessage": {
-            "minItems": "Missing material! Beard asset must have exactly one material.",
-            "maxItems": "Too many materials! Beard asset must have exactly one material."
+            "minItems": "Missing material! This bottom asset must have 1 material. Found ${/materials/properties/length}.",
+            "maxItems": "Too many materials! This bottom asset must have 1 material. Found ${/materials/properties/length}."
           }
         }
       }
     },
-    "textures": { "$ref": "commonTexture.schema.json#/$defs/normalMap" },
-    "animations": { "$ref": "animation.schema.json#/properties/noAnimation" }
+    "textures": { "$ref": "commonTexture.schema.json#/$defs/fullPBR" },
+    "animations": { "$ref": "animation.schema.json#/properties/noAnimation" },
+    "joints": {
+      "anyOf": [
+        {
+          "allOf": [
+            { "$ref": "joints.schema.json#/$defs/skeletonV3" },
+            { "$ref": "joints.schema.json#/$defs/skeletonV3/$defs/maxJoints" }
+          ]
+        }
+      ]
+    }
   },
-  "required": ["scenes", "meshes", "materials"]
+  "required": ["scenes", "meshes", "materials", "textures", "joints"]
 }

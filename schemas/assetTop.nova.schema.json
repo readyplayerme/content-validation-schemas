@@ -1,16 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "assetShirt.schema.json",
-  "title": "Half-body Shirt Asset",
-  "description": "A Ready Player Me glTF binary validation schema for half-body shirts.",
+  "$id": "assetTop.schema.json",
+  "title": "Modular Top Outfit Asset",
+  "description": "A Ready Player Me glTF binary validation schema for a top module of an outfit.",
   "type": "object",
   "properties": {
-    "scenes": { "$ref": "scene.schema.json#/$defs/singleMeshScene" },
+    "scenes": { "$ref": "scene.schema.json#/$defs/fullbodyOutfitScene" },
     "meshes": {
       "type": "object",
       "properties": {
         "totalTriangleCount": {
-          "$ref": "meshTriangleCount.schema.json#/properties/halfbodyShirt"
+          "$ref": "meshTriangleCount.schema.json#/properties/nova/top"
         },
         "properties": {
           "$comment": "inspect() creates a 'properties' object. Do not confuse with the 'properties' keyword.",
@@ -20,10 +20,10 @@
             "properties": {
               "name": {
                 "description": "Name of the mesh.",
-                "$ref": "meshNames.schema.json#/properties/halfbodyShirt"
+                "$ref": "meshNames.schema.json#/properties/nova/top"
               },
               "attributes": {
-                "$ref": "meshAttributes.schema.json#/properties/unskinned"
+                "$ref": "meshAttributes.schema.json#/properties/skinned"
               }
             },
             "allOf": [{ "$ref": "commonMesh.schema.json" }],
@@ -38,6 +38,12 @@
               "instances",
               "size"
             ]
+          },
+          "minItems": 1,
+          "maxItems": 1,
+          "errorMessage": {
+            "minItems": "Missing mesh! Top asset must have 1 mesh.",
+            "maxItems": "Too many meshes! Top asset must have 1 mesh only."
           }
         }
       }
@@ -53,13 +59,13 @@
             "properties": {
               "name": {
                 "description": "Name of the material.",
-                "$ref": "materialNames.schema.json#/properties/halfbodyShirt"
+                "$ref": "materialNames.schema.json#/properties/nova/top"
               },
               "textures": {
                 "$ref": "commonMaterial.schema.json#/$defs/allTextureChannels"
               },
               "doubleSided": {
-                "$ref": "commonMaterial.schema.json#/$defs/singleSided"
+                "$ref": "commonMaterial.schema.json#/$defs/anySided"
               },
               "alphaMode": {
                 "$ref": "commonMaterial.schema.json#/$defs/anyAlphaMode"
@@ -77,14 +83,24 @@
           "minItems": 1,
           "maxItems": 1,
           "errorMessage": {
-            "minItems": "Missing material! Shirt asset must have at least 1 material.",
-            "maxItems": "Too many materials! Shirt asset must have at most 1 material."
+            "minItems": "Missing material! This top asset must have 1 material. Found ${/materials/properties/length}.",
+            "maxItems": "Too many materials! This top asset must have 1 material. Found ${/materials/properties/length}."
           }
         }
       }
     },
     "textures": { "$ref": "commonTexture.schema.json#/$defs/fullPBR" },
-    "animations": { "$ref": "animation.schema.json#/properties/noAnimation" }
+    "animations": { "$ref": "animation.schema.json#/properties/noAnimation" },
+    "joints": {
+      "anyOf": [
+        {
+          "allOf": [
+            { "$ref": "joints.schema.json#/$defs/skeletonV3" },
+            { "$ref": "joints.schema.json#/$defs/skeletonV3/$defs/maxJoints" }
+          ]
+        }
+      ]
+    }
   },
-  "required": ["scenes", "meshes", "materials", "textures"]
+  "required": ["scenes", "meshes", "materials", "textures", "joints"]
 }
