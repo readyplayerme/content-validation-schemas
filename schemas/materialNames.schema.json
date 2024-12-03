@@ -40,6 +40,14 @@
         "Wolf3D_Outfit_Top"
       ],
       "errorMessage": "Material name should be one of 'Wolf3D_Body', 'Wolf3D_Outfit_Bottom', 'Wolf3D_Outfit_Footwear', 'Wolf3D_Outfit_Top'. Found ${0} instead."
+    },
+    "nova": {
+      "type": "object",
+      "properties": {
+        "bottom": { "type": "string", "const": "bottom", "errorMessage": "Material name should be 'bottom'. Found ${0} instead." },
+        "footwear": { "type": "string", "const": "footwear", "errorMessage": "Material name should be 'footwear'. Found ${0} instead." },
+        "top": { "type": "string", "const": "top", "errorMessage": "Material name should be 'top'. Found ${0} instead." }
+      }
     }
   }
 }
