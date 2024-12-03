@@ -95,8 +95,10 @@
       "anyOf": [
         {
           "allOf": [
-            { "$ref": "joints.schema.json#/$defs/skeletonV3" },
-            { "$ref": "joints.schema.json#/$defs/skeletonV3/$defs/maxJoints" }
+            { "$ref": "joints.schema.json#/$defs/novaSkeletonV1" },
+            {
+              "$ref": "joints.schema.json#/$defs/novaSkeletonV1/$defs/maxJoints"
+            }
           ]
         }
       ]

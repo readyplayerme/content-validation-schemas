@@ -187,7 +187,7 @@
       },
       "errorMessage": { "required": "Missing skeleton joints." }
     },
-    "skeletonV3": {
+    "novaSkeletonV1": {
       "description": "Humanoid Ready Player Me skeleton hierarchy v3.",
       "type": "object",
       "properties": {
@@ -331,7 +331,7 @@
       "$defs": {
         "maxJoints": {
           "description": "Maximum allowed number of joints in the skeleton.",
-          "$comment": "Nova style armature. Usage: allOf: [{ '$ref': '#/$defs/skeletonV3' }, { '$ref': '#/$defs/skeletonV3/$defs/maxJoints' }]",
+          "$comment": "Nova style armature. Usage: allOf: [{ '$ref': '#/$defs/novaSkeletonV1' }, { '$ref': '#/$defs/novaSkeletonV1/$defs/maxJoints' }]",
           "type": "object",
           "minProperties": 67,
           "maxProperties": 67,
